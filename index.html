@@ -280,4 +280,947 @@
               <h3 class="font-bold text-sm sm:text-base text-white">Split & Extract PDF</h3>
               <p class="text-[11px] text-slate-400 mt-1">Live page photo dekh kar PDF pages alag karein.</p>
             </div>
-            <div class="mt-3 text-[11px] font-semibold text-tea
+            <div class="mt-3 text-[11px] font-semibold text-teal-400">Open Tool →</div>
+          </button>
+
+          <button type="button" onclick="window.switchTool('rotatepdf')" class="tap-btn text-left bg-[#111827] hover:bg-[#161F33] border border-slate-800 hover:border-cyan-500 rounded-2xl p-4 transition flex flex-col justify-between">
+            <div>
+              <div class="w-10 h-10 rounded-xl bg-cyan-500/15 text-cyan-400 flex items-center justify-center text-lg mb-3">🔄</div>
+              <h3 class="font-bold text-sm sm:text-base text-white">Rotate PDF Pages</h3>
+              <p class="text-[11px] text-slate-400 mt-1">Tedhe PDF pages ko seedha (90°/180°) karein.</p>
+            </div>
+            <div class="mt-3 text-[11px] font-semibold text-cyan-400">Open Tool →</div>
+          </button>
+
+          <button type="button" onclick="window.switchTool('watermarkpdf')" class="tap-btn text-left bg-[#111827] hover:bg-[#161F33] border border-slate-800 hover:border-rose-500 rounded-2xl p-4 transition flex flex-col justify-between">
+            <div>
+              <div class="w-10 h-10 rounded-xl bg-rose-500/15 text-rose-400 flex items-center justify-center text-lg mb-3">🏷️</div>
+              <h3 class="font-bold text-sm sm:text-base text-white">Watermark & Page #</h3>
+              <p class="text-[11px] text-slate-400 mt-1">PDF par apna naam aur Page Number lagayein.</p>
+            </div>
+            <div class="mt-3 text-[11px] font-semibold text-rose-400">Open Tool →</div>
+          </button>
+
+          <button type="button" onclick="window.switchTool('pdf2img')" class="tap-btn text-left bg-[#111827] hover:bg-[#161F33] border border-slate-800 hover:border-yellow-500 rounded-2xl p-4 transition flex flex-col justify-between">
+            <div>
+              <div class="w-10 h-10 rounded-xl bg-yellow-500/15 text-yellow-400 flex items-center justify-center text-lg mb-3">📸</div>
+              <h3 class="font-bold text-sm sm:text-base text-white">PDF to JPG Photo</h3>
+              <p class="text-[11px] text-slate-400 mt-1">PDF ke har page ko HD JPG photo banayein.</p>
+            </div>
+            <div class="mt-3 text-[11px] font-semibold text-yellow-400">Open Tool →</div>
+          </button>
+        </div>
+      </section>
+
+      <!-- 2. CROPPER -->
+      <section id="view-cropper" class="tool-view hidden space-y-4">
+        <div class="flex items-center justify-between bg-[#111827] p-3.5 rounded-2xl border border-slate-800">
+          <div>
+            <h2 class="text-sm sm:text-base font-bold text-white">✂️ Photo Crop & Shape Cutter</h2>
+            <p class="text-[11px] text-slate-400">Upar crop karein, neeche Live Cut Preview dekhein</p>
+          </div>
+          <label class="tap-btn cursor-pointer px-3.5 py-2 rounded-xl bg-indigo-600 text-white text-xs font-bold">
+            + Upload Photo
+            <input type="file" accept="image/*" class="hidden" onchange="window.handleCropUpload(event)" />
+          </label>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          <div class="lg:col-span-7 bg-[#111827] rounded-2xl border border-slate-800 p-3 space-y-3">
+            <div class="w-full rounded-xl overflow-hidden studio-canvas p-2 flex items-center justify-center min-h-[240px]">
+              <img id="crop-image" src="" alt="Crop target" class="max-w-full block" />
+            </div>
+            <div class="bg-slate-900 border border-slate-800 rounded-xl p-3 flex items-center justify-between gap-3">
+              <div class="flex items-center gap-3">
+                <img id="crop-live-thumb" class="w-14 h-14 rounded-lg studio-canvas border border-slate-700 object-contain" />
+                <div>
+                  <span class="text-[10px] font-bold text-emerald-400 block">● LIVE CUT RESULT</span>
+                  <div id="crop-live-dims" class="text-xs font-bold text-white">Ready</div>
+                </div>
+              </div>
+              <a id="crop-download-btn" download="shubham-cropped.png" class="tap-btn px-4 py-2.5 rounded-xl bg-emerald-600 text-white text-xs font-bold">⬇️ Download</a>
+            </div>
+          </div>
+
+          <div class="lg:col-span-5 bg-[#111827] rounded-2xl border border-slate-800 p-4 space-y-4">
+            <div>
+              <label class="text-xs font-semibold text-slate-300 block mb-2">1. Size / Ratio Presets</label>
+              <div class="grid grid-cols-3 gap-1.5">
+                <button type="button" onclick="window.setCropRatio(NaN,0,0)" class="tap-btn py-2 rounded-lg bg-slate-800 text-xs text-slate-200">Free Hand</button>
+                <button type="button" onclick="window.setCropRatio(1,500,500)" class="tap-btn py-2 rounded-lg bg-slate-800 text-xs text-slate-200">1:1 Square</button>
+                <button type="button" onclick="window.setCropRatio(3.5/4.5,413,531)" class="tap-btn py-2 rounded-lg bg-slate-800 text-xs text-slate-200">Passport</button>
+                <button type="button" onclick="window.setCropRatio(213/213,213,213)" class="tap-btn py-2 rounded-lg bg-slate-800 text-xs text-slate-200">PAN 213px</button>
+                <button type="button" onclick="window.setCropRatio(140/60,140,60)" class="tap-btn py-2 rounded-lg bg-slate-800 text-xs text-slate-200">SSC Sign</button>
+                <button type="button" onclick="window.setCropRatio(350/350,350,350)" class="tap-btn py-2 rounded-lg bg-slate-800 text-xs text-slate-200">UPSC 350px</button>
+              </div>
+            </div>
+            <div>
+              <label class="text-xs font-semibold text-slate-300 block mb-2">2. Shape Cutter</label>
+              <div class="grid grid-cols-3 gap-1.5">
+                <button type="button" onclick="window.setCropShape('rect')" id="shape-rect" class="tap-btn py-2 rounded-lg bg-indigo-600 text-white text-xs font-semibold">Rectangle</button>
+                <button type="button" onclick="window.setCropShape('rounded')" id="shape-rounded" class="tap-btn py-2 rounded-lg bg-slate-800 text-slate-300 text-xs font-semibold">Rounded</button>
+                <button type="button" onclick="window.setCropShape('circle')" id="shape-circle" class="tap-btn py-2 rounded-lg bg-slate-800 text-slate-300 text-xs font-semibold">Circle DP</button>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <button type="button" onclick="window.rotateCropper(-90)" class="tap-btn py-2.5 rounded-xl bg-slate-800 text-slate-200 text-xs font-semibold">↺ Rotate Left</button>
+              <button type="button" onclick="window.rotateCropper(90)" class="tap-btn py-2.5 rounded-xl bg-slate-800 text-slate-200 text-xs font-semibold">↻ Rotate Right</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 3. PASSPORT SHEET -->
+      <section id="view-passport" class="tool-view hidden space-y-4">
+        <div class="flex items-center justify-between bg-[#111827] p-3.5 rounded-2xl border border-slate-800">
+          <div>
+            <h2 class="text-sm sm:text-base font-bold text-white">🪪 Passport Photo Sheet Maker</h2>
+            <p class="text-[11px] text-slate-400">Live 4×6 & A4 sheet preview</p>
+          </div>
+          <label class="tap-btn cursor-pointer px-3.5 py-2 rounded-xl bg-indigo-600 text-white text-xs font-bold">
+            + Upload Photo
+            <input type="file" accept="image/*" class="hidden" onchange="window.handlePassportUpload(event)" />
+          </label>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          <div class="lg:col-span-7 bg-[#111827] rounded-2xl border border-slate-800 p-4 flex flex-col items-center studio-canvas">
+            <span class="text-[11px] font-bold text-emerald-400 self-start mb-2">● LIVE PRINT SHEET PREVIEW</span>
+            <canvas id="passport-canvas" class="max-w-full max-h-[320px] bg-white shadow-xl rounded border border-slate-700"></canvas>
+          </div>
+          <div class="lg:col-span-5 bg-[#111827] rounded-2xl border border-slate-800 p-4 space-y-3.5">
+            <div>
+              <label class="text-xs font-semibold text-slate-300 block mb-1">Sheet Size & Count</label>
+              <select id="pass-layout" onchange="window.renderPassportSheet()" class="w-full px-3 py-2.5 rounded-xl border border-slate-700 bg-slate-900 text-white">
+                <option value="4x6_8" selected>4×6 Inch — 8 Photos</option>
+                <option value="4x6_6">4×6 Inch — 6 Photos</option>
+                <option value="a4_6">A4 Sheet — 6 Photos</option>
+                <option value="a4_12">A4 Sheet — 12 Photos</option>
+                <option value="a4_30">A4 Full Sheet — 30 Photos</option>
+              </select>
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <input type="text" id="pass-name" oninput="window.renderPassportSheet()" placeholder="Name (SHUBHAM)" class="w-full px-3 py-2 rounded-xl border border-slate-700 bg-slate-900 text-white" />
+              <input type="text" id="pass-dob" oninput="window.renderPassportSheet()" placeholder="DOP (14/10/2026)" class="w-full px-3 py-2 rounded-xl border border-slate-700 bg-slate-900 text-white" />
+            </div>
+            <label class="flex items-center gap-2 text-xs text-slate-300">
+              <input type="checkbox" id="pass-border" checked onchange="window.renderPassportSheet()" class="w-4 h-4 accent-indigo-500" />
+              Black Cut Border
+            </label>
+            <div class="grid grid-cols-2 gap-2">
+              <button type="button" onclick="window.downloadPassportJPG()" class="tap-btn py-3 rounded-xl bg-indigo-600 text-white text-xs font-bold">⬇️ Download JPG</button>
+              <button type="button" onclick="window.printCanvas('passport-canvas')" class="tap-btn py-3 rounded-xl bg-emerald-600 text-white text-xs font-bold">🖨️ Print Sheet</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 4. RESIZER -->
+      <section id="view-resizer" class="tool-view hidden space-y-4">
+        <div class="flex items-center justify-between bg-[#111827] p-3.5 rounded-2xl border border-slate-800">
+          <div>
+            <h2 class="text-sm sm:text-base font-bold text-white">📐 Photo Resizer & KB Compressor</h2>
+            <p class="text-[11px] text-slate-400">Live KB size & dimension preview</p>
+          </div>
+          <label class="tap-btn cursor-pointer px-3.5 py-2 rounded-xl bg-indigo-600 text-white text-xs font-bold">
+            + Upload Photo
+            <input type="file" accept="image/*" class="hidden" onchange="window.handleResizeUpload(event)" />
+          </label>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          <div class="lg:col-span-7 bg-[#111827] rounded-2xl border border-slate-800 p-4 flex flex-col items-center studio-canvas">
+            <div class="w-full flex justify-between items-center mb-2">
+              <span class="text-[11px] font-bold text-emerald-400">● LIVE PREVIEW</span>
+              <div class="flex gap-1.5 text-xs">
+                <span id="resize-orig-badge" class="px-2 py-0.5 rounded bg-slate-800 text-slate-300">Orig: 42 KB</span>
+                <span id="resize-new-badge" class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 font-bold">New: 18 KB</span>
+              </div>
+            </div>
+            <img id="resize-preview" class="max-h-[240px] object-contain rounded border border-slate-700" />
+          </div>
+
+          <div class="lg:col-span-5 bg-[#111827] rounded-2xl border border-slate-800 p-4 space-y-3.5">
+            <div class="grid grid-cols-2 gap-2">
+              <div>
+                <label class="text-xs text-slate-300 block mb-1">Width (px)</label>
+                <input type="number" id="resize-w" oninput="window.onResizeDimChange('w')" class="w-full px-3 py-2 rounded-xl border border-slate-700 bg-slate-900 text-white" />
+              </div>
+              <div>
+                <label class="text-xs text-slate-300 block mb-1">Height (px)</label>
+                <input type="number" id="resize-h" oninput="window.onResizeDimChange('h')" class="w-full px-3 py-2 rounded-xl border border-slate-700 bg-slate-900 text-white" />
+              </div>
+            </div>
+            <label class="flex items-center gap-2 text-xs text-slate-300">
+              <input type="checkbox" id="resize-lock" checked class="w-4 h-4 accent-indigo-500" /> Lock Aspect Ratio
+            </label>
+            <div>
+              <div class="flex justify-between text-xs text-slate-300 mb-1">
+                <span>Quality Slider</span><span id="resize-q-label" class="text-indigo-400 font-bold">80%</span>
+              </div>
+              <input type="range" id="resize-q" min="10" max="100" value="80" oninput="window.updateResizerPreview()" class="w-full" />
+            </div>
+            <select id="resize-format" onchange="window.updateResizerPreview()" class="w-full px-3 py-2 rounded-xl border border-slate-700 bg-slate-900 text-white">
+              <option value="image/jpeg">JPG (Small KB)</option>
+              <option value="image/webp">WEBP</option>
+              <option value="image/png">PNG</option>
+            </select>
+            <a id="resize-download" download="shubham-resized.jpg" class="tap-btn block text-center w-full py-3 rounded-xl bg-indigo-600 text-white text-xs font-bold">⬇️ Download Resized Photo</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- 5. SIGNATURE CLEANER -->
+      <section id="view-sigclean" class="tool-view hidden space-y-4">
+        <div class="flex items-center justify-between bg-[#111827] p-3.5 rounded-2xl border border-slate-800">
+          <div>
+            <h2 class="text-sm sm:text-base font-bold text-white">✍️ Signature & Document Cleaner</h2>
+            <p class="text-[11px] text-slate-400">Live white background & ink enhancer</p>
+          </div>
+          <label class="tap-btn cursor-pointer px-3.5 py-2 rounded-xl bg-indigo-600 text-white text-xs font-bold">
+            + Upload Sign
+            <input type="file" accept="image/*" class="hidden" onchange="window.handleSigUpload(event)" />
+          </label>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          <div class="lg:col-span-7 bg-[#111827] rounded-2xl border border-slate-800 p-4 flex flex-col items-center studio-canvas">
+            <span class="text-[11px] font-bold text-emerald-400 self-start mb-2">● LIVE CLEAN SIGNATURE</span>
+            <canvas id="sig-canvas" class="max-w-full max-h-[220px] bg-white rounded border border-slate-700"></canvas>
+          </div>
+          <div class="lg:col-span-5 bg-[#111827] rounded-2xl border border-slate-800 p-4 space-y-4">
+            <div>
+              <div class="flex justify-between text-xs text-slate-300 mb-1">
+                <span>Whitening Strength</span><span id="sig-thresh-val" class="text-indigo-400 font-bold">165</span>
+              </div>
+              <input type="range" id="sig-thresh" min="60" max="235" value="165" oninput="window.renderSignatureClean()" class="w-full" />
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <select id="sig-ink" onchange="window.renderSignatureClean()" class="px-3 py-2 rounded-xl border border-slate-700 bg-slate-900 text-white">
+                <option value="black">Black Ink</option>
+                <option value="blue">Blue Pen</option>
+              </select>
+              <select id="sig-bg" onchange="window.renderSignatureClean()" class="px-3 py-2 rounded-xl border border-slate-700 bg-slate-900 text-white">
+                <option value="white">White JPG</option>
+                <option value="transparent">Transparent PNG</option>
+              </select>
+            </div>
+            <button type="button" onclick="window.downloadCleanSignature()" class="tap-btn w-full py-3 rounded-xl bg-indigo-600 text-white text-xs font-bold">⬇️ Download Signature</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 6. ID CARD FRONT + BACK -->
+      <section id="view-idcard" class="tool-view hidden space-y-4">
+        <div class="bg-[#111827] p-3.5 rounded-2xl border border-slate-800">
+          <h2 class="text-sm sm:text-base font-bold text-white">💳 ID Card Front + Back Combiner</h2>
+          <p class="text-[11px] text-slate-400">Aadhaar/PAN Front & Back on single A4 page</p>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          <div class="lg:col-span-7 bg-[#111827] rounded-2xl border border-slate-800 p-4 flex flex-col items-center studio-canvas">
+            <canvas id="idcard-canvas" class="max-w-full max-h-[300px] bg-white rounded border border-slate-700"></canvas>
+          </div>
+          <div class="lg:col-span-5 bg-[#111827] rounded-2xl border border-slate-800 p-4 space-y-3.5">
+            <div class="grid grid-cols-2 gap-2">
+              <label class="tap-btn cursor-pointer py-3 px-2 rounded-xl border border-dashed border-indigo-500 bg-indigo-500/10 text-center text-xs font-bold text-indigo-300">
+                + Front Photo
+                <input type="file" accept="image/*" class="hidden" onchange="window.handleIdCardUpload(event, 'front')" />
+              </label>
+              <label class="tap-btn cursor-pointer py-3 px-2 rounded-xl border border-dashed border-pink-500 bg-pink-500/10 text-center text-xs font-bold text-pink-300">
+                + Back Photo
+                <input type="file" accept="image/*" class="hidden" onchange="window.handleIdCardUpload(event, 'back')" />
+              </label>
+            </div>
+            <select id="idcard-layout" onchange="window.renderIdCardSheet()" class="w-full px-3 py-2.5 rounded-xl border border-slate-700 bg-slate-900 text-white">
+              <option value="side">Side-by-Side (Left & Right)</option>
+              <option value="stack">Top & Bottom</option>
+            </select>
+            <div class="grid grid-cols-2 gap-2">
+              <button type="button" onclick="window.downloadIdCardJPG()" class="tap-btn py-3 rounded-xl bg-indigo-600 text-white text-xs font-bold">⬇️ Download JPG</button>
+              <button type="button" onclick="window.printCanvas('idcard-canvas')" class="tap-btn py-3 rounded-xl bg-emerald-600 text-white text-xs font-bold">🖨️ Print A4</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- 7. IMAGE TO PDF -->
+      <section id="view-img2pdf" class="tool-view hidden space-y-4">
+        <div class="flex items-center justify-between bg-[#111827] p-3.5 rounded-2xl border border-slate-800">
+          <h2 class="text-sm sm:text-base font-bold text-white">🖼️ Image to PDF Converter</h2>
+          <label class="tap-btn cursor-pointer px-3.5 py-2 rounded-xl bg-indigo-600 text-white text-xs font-bold">
+            + Add Photos
+            <input type="file" accept="image/*" multiple class="hidden" onchange="window.handleImg2PdfUpload(event)" />
+          </label>
+        </div>
+        <div class="bg-[#111827] rounded-2xl border border-slate-800 p-4 space-y-4">
+          <div id="img2pdf-list" class="grid grid-cols-2 sm:grid-cols-4 gap-3 min-h-[140px] studio-canvas p-3 rounded-xl">
+            <div class="col-span-full text-center text-xs text-slate-400 py-8">Photos select karein</div>
+          </div>
+          <div class="flex gap-2">
+            <select id="img2pdf-size" class="px-3 py-2.5 rounded-xl border border-slate-700 bg-slate-900 text-white text-xs">
+              <option value="a4">A4 Page Size</option>
+              <option value="fit">Fit Image</option>
+            </select>
+            <button type="button" onclick="window.generateImagesToPdf()" class="tap-btn flex-1 py-3 rounded-xl bg-indigo-600 text-white text-xs font-bold">📄 Generate PDF</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 8. MERGE PDF -->
+      <section id="view-mergepdf" class="tool-view hidden space-y-4">
+        <div class="flex items-center justify-between bg-[#111827] p-3.5 rounded-2xl border border-slate-800">
+          <h2 class="text-sm sm:text-base font-bold text-white">📑 Merge PDF Files</h2>
+          <label class="tap-btn cursor-pointer px-3.5 py-2 rounded-xl bg-indigo-600 text-white text-xs font-bold">
+            + Add PDFs
+            <input type="file" accept="application/pdf" multiple class="hidden" onchange="window.handleMergePdfUpload(event)" />
+          </label>
+        </div>
+        <div class="bg-[#111827] rounded-2xl border border-slate-800 p-4 space-y-3">
+          <div id="mergepdf-list" class="space-y-2 min-h-[100px] studio-canvas p-3 rounded-xl">
+            <div class="text-center text-xs text-slate-400 py-6">2 ya zyada PDF add karein</div>
+          </div>
+          <button type="button" onclick="window.executeMergePdf()" class="tap-btn w-full py-3 rounded-xl bg-indigo-600 text-white text-xs font-bold">📑 Merge & Download PDF</button>
+        </div>
+      </section>
+
+      <!-- 9. SPLIT PDF -->
+      <section id="view-splitpdf" class="tool-view hidden space-y-4">
+        <div class="flex items-center justify-between bg-[#111827] p-3.5 rounded-2xl border border-slate-800">
+          <h2 class="text-sm sm:text-base font-bold text-white">📄 Split & Extract PDF</h2>
+          <label class="tap-btn cursor-pointer px-3.5 py-2 rounded-xl bg-indigo-600 text-white text-xs font-bold">
+            + Upload PDF
+            <input type="file" accept="application/pdf" class="hidden" onchange="window.handleSplitPdfUpload(event)" />
+          </label>
+        </div>
+        <div class="bg-[#111827] rounded-2xl border border-slate-800 p-4 space-y-4">
+          <div id="splitpdf-thumbs" class="grid grid-cols-2 sm:grid-cols-4 gap-3 studio-canvas p-3 rounded-xl min-h-[120px]">
+            <div class="col-span-full text-center text-xs text-slate-400 py-6">PDF upload karein ya upar Demo dabayein</div>
+          </div>
+          <div class="flex gap-2">
+            <input type="text" id="splitpdf-range" placeholder="e.g. 1, 2 or 1-3" class="flex-1 px-3 py-2.5 rounded-xl border border-slate-700 bg-slate-900 text-white" />
+            <button type="button" onclick="window.executeSplitPdf()" class="tap-btn px-5 py-3 rounded-xl bg-indigo-600 text-white text-xs font-bold">Extract PDF</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 10. ROTATE PDF -->
+      <section id="view-rotatepdf" class="tool-view hidden space-y-4">
+        <div class="flex items-center justify-between bg-[#111827] p-3.5 rounded-2xl border border-slate-800">
+          <h2 class="text-sm sm:text-base font-bold text-white">🔄 Rotate PDF Pages</h2>
+          <label class="tap-btn cursor-pointer px-3.5 py-2 rounded-xl bg-indigo-600 text-white text-xs font-bold">
+            + Upload PDF
+            <input type="file" accept="application/pdf" class="hidden" onchange="window.handleRotatePdfUpload(event)" />
+          </label>
+        </div>
+        <div class="bg-[#111827] rounded-2xl border border-slate-800 p-4 space-y-4">
+          <div id="rotatepdf-Status" class="text-xs text-slate-300">Upload a PDF to rotate</div>
+          <div class="flex gap-2">
+            <button type="button" onclick="window.rotateAllPdfPages(90)" class="tap-btn flex-1 py-3 rounded-xl bg-slate-800 text-white text-xs font-bold">↻ Rotate +90°</button>
+            <button type="button" onclick="window.rotateAllPdfPages(180)" class="tap-btn flex-1 py-3 rounded-xl bg-slate-800 text-white text-xs font-bold">↕ Rotate 180°</button>
+          </div>
+          <button type="button" onclick="window.downloadRotatedPdf()" class="tap-btn w-full py-3 rounded-xl bg-indigo-600 text-white text-xs font-bold">⬇️ Download Rotated PDF</button>
+        </div>
+      </section>
+
+      <!-- 11. WATERMARK PDF -->
+      <section id="view-watermarkpdf" class="tool-view hidden space-y-4">
+        <div class="flex items-center justify-between bg-[#111827] p-3.5 rounded-2xl border border-slate-800">
+          <h2 class="text-sm sm:text-base font-bold text-white">🏷️ Watermark & Page Numbers</h2>
+          <label class="tap-btn cursor-pointer px-3.5 py-2 rounded-xl bg-indigo-600 text-white text-xs font-bold">
+            + Upload PDF
+            <input type="file" accept="application/pdf" class="hidden" onchange="window.handleWmPdfUpload(event)" />
+          </label>
+        </div>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          <div class="lg:col-span-7 bg-[#111827] rounded-2xl border border-slate-800 p-4 flex flex-col items-center studio-canvas">
+            <canvas id="wm-preview-canvas" class="max-w-full max-h-[260px] bg-white rounded border border-slate-700"></canvas>
+          </div>
+          <div class="lg:col-span-5 bg-[#111827] rounded-2xl border border-slate-800 p-4 space-y-3.5">
+            <input type="text" id="wm-text" value="SHUBHAM COMPUTER KASARA" oninput="window.renderWmPreview()" class="w-full px-3 py-2 rounded-xl border border-slate-700 bg-slate-900 text-white" />
+            <label class="flex items-center gap-2 text-xs text-slate-300">
+              <input type="checkbox" id="wm-pagenum" checked onchange="window.renderWmPreview()" class="w-4 h-4 accent-indigo-500" /> Add Page Numbers
+            </label>
+            <button type="button" onclick="window.applyPdfWatermark()" class="tap-btn w-full py-3 rounded-xl bg-indigo-600 text-white text-xs font-bold">🏷️ Stamp & Download PDF</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- 12. PDF TO JPG -->
+      <section id="view-pdf2img" class="tool-view hidden space-y-4">
+        <div class="flex items-center justify-between bg-[#111827] p-3.5 rounded-2xl border border-slate-800">
+          <h2 class="text-sm sm:text-base font-bold text-white">📸 PDF to High-Res JPG</h2>
+          <label class="tap-btn cursor-pointer px-3.5 py-2 rounded-xl bg-indigo-600 text-white text-xs font-bold">
+            + Upload PDF
+            <input type="file" accept="application/pdf" class="hidden" onchange="window.handlePdf2ImgUpload(event)" />
+          </label>
+        </div>
+        <div id="pdf2img-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-3 bg-[#111827] rounded-2xl border border-slate-800 p-4 min-h-[140px] studio-canvas">
+          <div class="col-span-full text-center text-xs text-slate-400 py-8">PDF select karein ya Demo dabayein</div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ==================== MOBILE BOTTOM BAR ==================== -->
+  <nav class="fixed bottom-0 inset-x-0 z-30 bg-[#0B0F19]/95 backdrop-blur border-t border-slate-800 flex items-center justify-around py-1.5 lg:hidden">
+    <button type="button" onclick="window.switchTool('dashboard')" data-nav="dashboard" class="mob-nav flex flex-col items-center py-1 px-3 text-indigo-400">
+      <span class="text-base">🏠</span><span class="text-[10px] font-semibold">Home</span>
+    </button>
+    <button type="button" onclick="window.switchTool('cropper')" data-nav="cropper" class="mob-nav flex flex-col items-center py-1 px-3 text-slate-400">
+      <span class="text-base">✂️</span><span class="text-[10px] font-semibold">Crop</span>
+    </button>
+    <button type="button" onclick="window.switchTool('passport')" data-nav="passport" class="mob-nav flex flex-col items-center py-1 px-3 text-slate-400">
+      <span class="text-base">🪪</span><span class="text-[10px] font-semibold">Passport</span>
+    </button>
+    <button type="button" onclick="window.switchTool('resizer')" data-nav="resizer" class="mob-nav flex flex-col items-center py-1 px-3 text-slate-400">
+      <span class="text-base">📐</span><span class="text-[10px] font-semibold">Resize</span>
+    </button>
+    <button type="button" onclick="window.toggleMobileDrawer(true)" class="mob-nav flex flex-col items-center py-1 px-3 text-slate-400">
+      <span class="text-base">🧰</span><span class="text-[10px] font-semibold">All Tools</span>
+    </button>
+  </nav>
+
+  <!-- ==================== CORE NAVIGATION & TOOL SCRIPT ==================== -->
+  <script>
+    if (window.pdfjsLib) {
+      window.pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+    }
+
+    const TOOLS_MENU = [
+      { id: 'dashboard', label: 'All Tools Hub', icon: '🏠', cat: 'MAIN' },
+      { id: 'cropper', label: 'Photo Crop & Cutter', icon: '✂️', cat: 'IMAGE TOOLS' },
+      { id: 'passport', label: 'Passport Photo Sheet', icon: '🪪', cat: 'IMAGE TOOLS' },
+      { id: 'resizer', label: 'Photo Resizer & KB', icon: '📐', cat: 'IMAGE TOOLS' },
+      { id: 'sigclean', label: 'Signature Cleaner', icon: '✍️', cat: 'IMAGE TOOLS' },
+      { id: 'idcard', label: 'ID Card Front + Back', icon: '💳', cat: 'IMAGE TOOLS' },
+      { id: 'img2pdf', label: 'Image to PDF', icon: '🖼️', cat: 'IMAGE TOOLS' },
+      { id: 'mergepdf', label: 'Merge PDFs', icon: '📑', cat: 'PDF TOOLS' },
+      { id: 'splitpdf', label: 'Split & Extract PDF', icon: '📄', cat: 'PDF TOOLS' },
+      { id: 'rotatepdf', label: 'Rotate PDF Pages', icon: '🔄', cat: 'PDF TOOLS' },
+      { id: 'watermarkpdf', label: 'Watermark & Page #', icon: '🏷️', cat: 'PDF TOOLS' },
+      { id: 'pdf2img', label: 'PDF to JPG / PNG', icon: '📸', cat: 'PDF TOOLS' }
+    ];
+
+    window.currentTool = 'dashboard';
+
+    window.renderNavigationMenus = function() {
+      let html = '';
+      let lastCat = '';
+      TOOLS_MENU.forEach(t => {
+        if (t.cat !== lastCat && t.cat !== 'MAIN') {
+          html += `<div class="pt-3 pb-1 px-2 text-[10px] font-bold uppercase text-slate-500">${t.cat}</div>`;
+          lastCat = t.cat;
+        }
+        const active = window.currentTool === t.id;
+        html += `
+          <button type="button" onclick="window.switchTool('${t.id}');window.toggleMobileDrawer(false);" class="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-xs font-semibold transition ${active ? 'bg-indigo-600 text-white shadow' : 'text-slate-300 hover:bg-slate-800'}">
+            <span>${t.icon}</span><span>${t.label}</span>
+          </button>
+        `;
+      });
+      const d = document.getElementById('desktop-sidebar-links');
+      const m = document.getElementById('mobile-drawer-links');
+      if (d) d.innerHTML = html;
+      if (m) m.innerHTML = html;
+    };
+
+    window.toggleMobileDrawer = function(open) {
+      const dr = document.getElementById('mobile-drawer');
+      const ov = document.getElementById('mobile-drawer-overlay');
+      if (!dr || !ov) return;
+      if (open) {
+        ov.classList.remove('hidden');
+        dr.classList.remove('-translate-x-full');
+      } else {
+        ov.classList.add('hidden');
+        dr.classList.add('-translate-x-full');
+      }
+    };
+
+    window.switchTool = function(toolId) {
+      window.currentTool = toolId;
+      document.querySelectorAll('.tool-view').forEach(el => el.classList.add('hidden'));
+      const target = document.getElementById('view-' + toolId);
+      if (target) target.classList.remove('hidden');
+
+      window.renderNavigationMenus();
+
+      document.querySelectorAll('.tool-pill').forEach(btn => {
+        if (btn.dataset.pill === toolId) {
+          btn.className = 'tool-pill shrink-0 px-3 py-1.5 rounded-full text-xs font-bold bg-indigo-600 text-white';
+        } else {
+          btn.className = 'tool-pill shrink-0 px-3 py-1.5 rounded-full text-xs font-medium bg-slate-800 text-slate-300';
+        }
+      });
+
+      document.querySelectorAll('.mob-nav').forEach(btn => {
+        if (btn.dataset.nav === toolId) {
+          btn.classList.remove('text-slate-400');
+          btn.classList.add('text-indigo-400');
+        } else if (btn.dataset.nav) {
+          btn.classList.remove('text-indigo-400');
+          btn.classList.add('text-slate-400');
+        }
+      });
+
+      try {
+        if (toolId === 'cropper' && !window.cropper) window.initCropperWithUrl(window.createDemoPortraitDataURL());
+        if (toolId === 'passport') window.renderPassportSheet();
+        if (toolId === 'resizer' && !window.resizeImg) window.loadResizeImage(window.createDemoPortraitDataURL(), 43200);
+        if (toolId === 'sigclean' && !window.sigImg) window.loadSampleSignature();
+        if (toolId === 'idcard') window.renderIdCardSheet();
+        if (toolId === 'watermarkpdf') window.renderWmPreview();
+      } catch (err) { console.log(err); }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    window.createDemoPortraitDataURL = function() {
+      const c = document.createElement('canvas');
+      c.width = 450; c.height = 550;
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = '#38BDF8'; ctx.fillRect(0, 0, c.width, c.height);
+      ctx.fillStyle = '#1E293B'; ctx.beginPath(); ctx.arc(225, 520, 175, Math.PI, 0); ctx.fill();
+      ctx.fillStyle = '#FDBA74'; ctx.beginPath(); ctx.arc(225, 220, 90, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#0F172A'; ctx.beginPath(); ctx.arc(225, 195, 92, Math.PI, 0); ctx.fill();
+      return c.toDataURL('image/jpeg', 0.92);
+    };
+
+    window.createDemoPdfBytes = async function() {
+      const { PDFDocument, StandardFonts, rgb } = window.PDFLib;
+      const pdfDoc = await PDFDocument.create();
+      const font = await pdfDoc.embedFont(StandardFonts.HelveticaBold);
+      for (let i = 1; i <= 3; i++) {
+        const page = pdfDoc.addPage([595, 842]);
+        page.drawText('SHUBHAM COMPUTER JANSEVA KENDRA', { x: 65, y: 720, size: 20, font, color: rgb(0.1, 0.25, 0.7) });
+        page.drawText('Kasara, Mau — Sample Page ' + i, { x: 65, y: 680, size: 15, font, color: rgb(0.2, 0.2, 0.2) });
+      }
+      return await pdfDoc.save();
+    };
+
+    window.loadDemoForActiveTool = async function() {
+      if (window.currentTool === 'dashboard') window.switchTool('cropper');
+      const demo = window.createDemoPortraitDataURL();
+      if (window.currentTool === 'cropper') window.initCropperWithUrl(demo);
+      else if (window.currentTool === 'passport') {
+        window.passportImg = new Image();
+        window.passportImg.onload = window.renderPassportSheet;
+        window.passportImg.src = demo;
+      } else if (window.currentTool === 'resizer') window.loadResizeImage(demo, 43200);
+      else if (window.currentTool === 'sigclean') window.loadSampleSignature();
+      else if (window.currentTool === 'idcard') window.renderIdCardSheet();
+      else if (window.currentTool === 'splitpdf') {
+        const b = await window.createDemoPdfBytes();
+        await window.loadSplitPdfFromBytes(b);
+      } else if (window.currentTool === 'pdf2img') {
+        const b = await window.createDemoPdfBytes();
+        await window.renderPdfToImagesFromBytes(b);
+      }
+    };
+
+    /* 1. CROPPER */
+    window.cropper = null;
+    window.cropShape = 'rect';
+    window.targetW = 0; window.targetH = 0;
+
+    window.handleCropUpload = function(e) {
+      const f = e.target.files[0];
+      if (f) window.initCropperWithUrl(URL.createObjectURL(f));
+    };
+
+    window.initCropperWithUrl = function(url) {
+      const img = document.getElementById('crop-image');
+      img.src = url;
+      img.onload = () => {
+        if (window.cropper) window.cropper.destroy();
+        if (window.Cropper) {
+          window.cropper = new window.Cropper(img, {
+            viewMode: 1, dragMode: 'move', autoCropArea: 0.85, responsive: true,
+            cropend: window.updateLiveCropPreview, ready: window.updateLiveCropPreview
+          });
+        }
+      };
+    };
+
+    window.setCropRatio = function(r, w, h) {
+      window.targetW = w; window.targetH = h;
+      if (window.cropper) { window.cropper.setAspectRatio(r); setTimeout(window.updateLiveCropPreview, 60); }
+    };
+
+    window.setCropShape = function(s) {
+      window.cropShape = s;
+      ['rect', 'rounded', 'circle'].forEach(k => {
+        const b = document.getElementById('shape-' + k);
+        if (b) b.className = (k === s) ? 'tap-btn py-2 rounded-lg bg-indigo-600 text-white text-xs font-semibold' : 'tap-btn py-2 rounded-lg bg-slate-800 text-slate-300 text-xs font-semibold';
+      });
+      if (s === 'circle' && window.cropper) window.cropper.setAspectRatio(1);
+      setTimeout(window.updateLiveCropPreview, 60);
+    };
+
+    window.rotateCropper = function(d) {
+      if (window.cropper) { window.cropper.rotate(d); setTimeout(window.updateLiveCropPreview, 60); }
+    };
+
+    window.updateLiveCropPreview = function() {
+      if (!window.cropper) return;
+      const raw = window.cropper.getCroppedCanvas(window.targetW ? { width: window.targetW, height: window.targetH } : { maxWidth: 800, maxHeight: 800 });
+      if (!raw) return;
+      const out = document.createElement('canvas');
+      out.width = raw.width; out.height = raw.height;
+      const ctx = out.getContext('2d');
+      if (window.cropShape === 'circle') {
+        ctx.beginPath(); ctx.arc(out.width/2, out.height/2, Math.min(out.width, out.height)/2, 0, Math.PI*2); ctx.clip();
+      } else if (window.cropShape === 'rounded') {
+        const r = Math.min(out.width, out.height) * 0.14;
+        ctx.beginPath(); ctx.roundRect(0, 0, out.width, out.height, r); ctx.clip();
+      }
+      ctx.drawImage(raw, 0, 0);
+      const mime = (window.cropShape === 'rect') ? 'image/jpeg' : 'image/png';
+      const url = out.toDataURL(mime, 0.92);
+      document.getElementById('crop-live-thumb').src = url;
+      document.getElementById('crop-live-dims').textContent = out.width + ' × ' + out.height + ' px';
+      const dl = document.getElementById('crop-download-btn');
+      dl.href = url; dl.download = 'shubham-cropped.' + (mime === 'image/png' ? 'png' : 'jpg');
+    };
+
+    /* 2. PASSPORT */
+    window.passportImg = null;
+    window.handlePassportUpload = function(e) {
+      const f = e.target.files[0];
+      if (!f) return;
+      window.passportImg = new Image();
+      window.passportImg.onload = window.renderPassportSheet;
+      window.passportImg.src = URL.createObjectURL(f);
+    };
+
+    window.renderPassportSheet = function() {
+      const c = document.getElementById('passport-canvas');
+      if (!c) return;
+      const ctx = c.getContext('2d');
+      const layout = document.getElementById('pass-layout').value;
+      const nameT = document.getElementById('pass-name').value.trim();
+      const dobT = document.getElementById('pass-dob').value.trim();
+      const border = document.getElementById('pass-border').checked;
+
+      let cols = 4, rows = 2, sw = 1800, sh = 1200;
+      if (layout === '4x6_6') { cols = 3; rows = 2; }
+      else if (layout === 'a4_6') { cols = 6; rows = 1; sw = 2480; sh = 620; }
+      else if (layout === 'a4_12') { cols = 6; rows = 2; sw = 2480; sh = 1200; }
+      else if (layout === 'a4_30') { cols = 6; rows = 5; sw = 2480; sh = 3508; }
+
+      c.width = sw; c.height = sh;
+      ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, sw, sh);
+      const pw = 360, ph = 460;
+      const gx = (sw - cols * pw) / (cols + 1);
+      const gy = (sh - rows * ph) / (rows + 1);
+
+      for (let r = 0; r < rows; r++) {
+        for (let cl = 0; cl < cols; cl++) {
+          const x = gx + cl * (pw + gx), y = gy + r * (ph + gy);
+          if (window.passportImg) ctx.drawImage(window.passportImg, x, y, pw, ph);
+          if (nameT || dobT) {
+            const phBar = (nameT && dobT) ? 68 : 40;
+            ctx.fillStyle = '#FFFFFF'; ctx.fillRect(x, y + ph - phBar, pw, phBar);
+            ctx.fillStyle = '#000000'; ctx.textAlign = 'center'; ctx.font = 'bold 22px sans-serif';
+            if (nameT && dobT) {
+              ctx.fillText(nameT.toUpperCase(), x + pw/2, y + ph - 38);
+              ctx.font = 'bold 20px sans-serif'; ctx.fillText('DOP: ' + dobT, x + pw/2, y + ph - 12);
+            } else {
+              ctx.fillText((nameT || dobT).toUpperCase(), x + pw/2, y + ph - 13);
+            }
+          }
+          if (border) { ctx.strokeStyle = '#0F172A'; ctx.lineWidth = 4; ctx.strokeRect(x, y, pw, ph); }
+        }
+      }
+    };
+
+    window.downloadPassportJPG = function() {
+      const a = document.createElement('a');
+      a.href = document.getElementById('passport-canvas').toDataURL('image/jpeg', 0.95);
+      a.download = 'shubham-passport-sheet.jpg'; a.click();
+    };
+
+    /* 3. RESIZER */
+    window.resizeImg = null; window.resizeOrigBytes = 43200;
+    window.handleResizeUpload = function(e) {
+      const f = e.target.files[0];
+      if (f) window.loadResizeImage(URL.createObjectURL(f), f.size);
+    };
+    window.loadResizeImage = function(url, bytes) {
+      window.resizeOrigBytes = bytes;
+      window.resizeImg = new Image();
+      window.resizeImg.onload = () => {
+        document.getElementById('resize-w').value = window.resizeImg.width;
+        document.getElementById('resize-h').value = window.resizeImg.height;
+        window.updateResizerPreview();
+      };
+      window.resizeImg.src = url;
+    };
+    window.onResizeDimChange = function(wOrH) {
+      if (!window.resizeImg) return;
+      const wi = document.getElementById('resize-w'), hi = document.getElementById('resize-h');
+      const rt = window.resizeImg.width / window.resizeImg.height;
+      if (document.getElementById('resize-lock').checked) {
+        if (wOrH === 'w') hi.value = Math.round(wi.value / rt);
+        else wi.value = Math.round(hi.value * rt);
+      }
+      window.updateResizerPreview();
+    };
+    window.updateResizerPreview = function() {
+      if (!window.resizeImg) return;
+      const w = parseInt(document.getElementById('resize-w').value) || window.resizeImg.width;
+      const h = parseInt(document.getElementById('resize-h').value) || window.resizeImg.height;
+      const q = parseInt(document.getElementById('resize-q').value) / 100;
+      const fmt = document.getElementById('resize-format').value;
+      document.getElementById('resize-q-label').textContent = Math.round(q * 100) + '%';
+      const c = document.createElement('canvas'); c.width = w; c.height = h;
+      const ctx = c.getContext('2d');
+      if (fmt === 'image/jpeg') { ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, w, h); }
+      ctx.drawImage(window.resizeImg, 0, 0, w, h);
+      const url = c.toDataURL(fmt, q);
+      const kb = (((url.length - 22) * 0.75) / 1024).toFixed(1);
+      document.getElementById('resize-preview').src = url;
+      document.getElementById('resize-orig-badge').textContent = 'Orig: ' + (window.resizeOrigBytes/1024).toFixed(1) + ' KB';
+      document.getElementById('resize-new-badge').textContent = 'New: ' + kb + ' KB';
+      const dl = document.getElementById('resize-download');
+      dl.href = url; dl.download = 'shubham-resized.jpg';
+    };
+
+    /* 4. SIGNATURE CLEANER */
+    window.sigImg = null;
+    window.handleSigUpload = function(e) {
+      const f = e.target.files[0];
+      if (!f) return;
+      window.sigImg = new Image();
+      window.sigImg.onload = window.renderSignatureClean;
+      window.sigImg.src = URL.createObjectURL(f);
+    };
+    window.loadSampleSignature = function() {
+      const c = document.createElement('canvas'); c.width = 400; c.height = 150;
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = '#CBD5E1'; ctx.fillRect(0, 0, 400, 150);
+      ctx.font = 'italic bold 42px serif'; ctx.fillStyle = '#1E293B'; ctx.fillText('Shubham Kr.', 70, 90);
+      window.sigImg = new Image();
+      window.sigImg.onload = window.renderSignatureClean;
+      window.sigImg.src = c.toDataURL();
+    };
+    window.renderSignatureClean = function() {
+      const c = document.getElementById('sig-canvas');
+      if (!c || !window.sigImg) return;
+      const ctx = c.getContext('2d');
+      const th = parseInt(document.getElementById('sig-thresh').value);
+      document.getElementById('sig-thresh-val').textContent = th;
+      const ink = document.getElementById('sig-ink').value;
+      const bg = document.getElementById('sig-bg').value;
+      c.width = window.sigImg.width; c.height = window.sigImg.height;
+      ctx.drawImage(window.sigImg, 0, 0);
+      const id = ctx.getImageData(0, 0, c.width, c.height), d = id.data;
+      for (let i = 0; i < d.length; i += 4) {
+        const lum = 0.299*d[i] + 0.587*d[i+1] + 0.114*d[i+2];
+        if (lum < th) {
+          if (ink === 'blue') { d[i]=15; d[i+1]=55; d[i+2]=200; d[i+3]=255; }
+          else { d[i]=10; d[i+1]=15; d[i+2]=25; d[i+3]=255; }
+        } else {
+          if (bg === 'transparent') d[i+3]=0;
+          else { d[i]=255; d[i+1]=255; d[i+2]=255; d[i+3]=255; }
+        }
+      }
+      ctx.putImageData(id, 0, 0);
+    };
+    window.downloadCleanSignature = function() {
+      const bg = document.getElementById('sig-bg').value;
+      const a = document.createElement('a');
+      a.href = document.getElementById('sig-canvas').toDataURL(bg === 'transparent' ? 'image/png' : 'image/jpeg', 0.95);
+      a.download = 'shubham-signature.' + (bg === 'transparent' ? 'png' : 'jpg'); a.click();
+    };
+
+    /* 5. ID CARD */
+    window.idFront = null; window.idBack = null;
+    window.handleIdCardUpload = function(e, side) {
+      const f = e.target.files[0];
+      if (!f) return;
+      const img = new Image();
+      img.onload = () => { if (side === 'front') window.idFront = img; else window.idBack = img; window.renderIdCardSheet(); };
+      img.src = URL.createObjectURL(f);
+    };
+    window.renderIdCardSheet = function() {
+      const c = document.getElementById('idcard-canvas');
+      if (!c) return;
+      const ctx = c.getContext('2d');
+      const mode = document.getElementById('idcard-layout').value;
+      c.width = 1240; c.height = 1754;
+      ctx.fillStyle = '#FFFFFF'; ctx.fillRect(0, 0, c.width, c.height);
+      const cw = 500, ch = 315;
+      const p1 = mode === 'side' ? {x:80,y:120} : {x:370,y:120};
+      const p2 = mode === 'side' ? {x:660,y:120} : {x:370,y:490};
+      if (window.idFront) ctx.drawImage(window.idFront, p1.x, p1.y, cw, ch);
+      else { ctx.fillStyle='#EFF6FF'; ctx.fillRect(p1.x,p1.y,cw,ch); ctx.fillStyle='#1E40AF'; ctx.font='bold 24px sans-serif'; ctx.textAlign='center'; ctx.fillText('ID FRONT SIDE', p1.x+cw/2, p1.y+ch/2); }
+      ctx.strokeRect(p1.x, p1.y, cw, ch);
+      if (window.idBack) ctx.drawImage(window.idBack, p2.x, p2.y, cw, ch);
+      else { ctx.fillStyle='#F8FAFC'; ctx.fillRect(p2.x,p2.y,cw,ch); ctx.fillStyle='#475569'; ctx.font='bold 24px sans-serif'; ctx.textAlign='center'; ctx.fillText('ID BACK SIDE', p2.x+cw/2, p2.y+ch/2); }
+      ctx.strokeRect(p2.x, p2.y, cw, ch);
+    };
+    window.downloadIdCardJPG = function() {
+      const a = document.createElement('a');
+      a.href = document.getElementById('idcard-canvas').toDataURL('image/jpeg', 0.95);
+      a.download = 'shubham-idcard.jpg'; a.click();
+    };
+
+    /* 6. IMAGE TO PDF & PDF TOOLS */
+    window.img2PdfFiles = [];
+    window.handleImg2PdfUpload = function(e) {
+      Array.from(e.target.files).forEach(f => window.img2PdfFiles.push({ file: f, url: URL.createObjectURL(f) }));
+      const box = document.getElementById('img2pdf-list');
+      box.innerHTML = window.img2PdfFiles.map((it, i) => `<div class="bg-slate-900 p-2 rounded-xl border border-slate-700 text-center"><img src="${it.url}" class="h-20 mx-auto object-contain mb-1"/><span class="text-xs text-indigo-300">Page ${i+1}</span></div>`).join('');
+    };
+    window.generateImagesToPdf = async function() {
+      if (!window.img2PdfFiles.length) { alert('Pehle photo select karein!'); return; }
+      const { PDFDocument } = window.PDFLib;
+      const doc = await PDFDocument.create();
+      for (const it of window.img2PdfFiles) {
+        const img = await new Promise(r => { const i = new Image(); i.onload = () => r(i); i.src = it.url; });
+        const c = document.createElement('canvas'); c.width = img.width; c.height = img.height;
+        const ctx = c.getContext('2d'); ctx.fillStyle = '#FFF'; ctx.fillRect(0,0,c.width,c.height); ctx.drawImage(img,0,0);
+        const jb = await fetch(c.toDataURL('image/jpeg', 0.9)).then(r => r.arrayBuffer());
+        const emb = await doc.embedJpg(jb);
+        const page = doc.addPage([595.28, 841.89]);
+        const sc = Math.min(535/emb.width, 780/emb.height);
+        page.drawImage(emb, { x:(595.28-emb.width*sc)/2, y:(841.89-emb.height*sc)/2, width:emb.width*sc, height:emb.height*sc });
+      }
+      const b = await doc.save();
+      window.downloadBlob(new Blob([b], {type:'application/pdf'}), 'shubham-images.pdf');
+    };
+
+    window.mergeFiles = [];
+    window.handleMergePdfUpload = function(e) {
+      Array.from(e.target.files).forEach(f => window.mergeFiles.push(f));
+      document.getElementById('mergepdf-list').innerHTML = window.mergeFiles.map((f,i) => `<div class="bg-slate-900 p-2.5 rounded-xl border border-slate-700 text-xs">${i+1}. ${f.name}</div>`).join('');
+    };
+    window.executeMergePdf = async function() {
+      if (window.mergeFiles.length < 2) { alert('Kam se kam 2 PDF select karein!'); return; }
+      const { PDFDocument } = window.PDFLib;
+      const out = await PDFDocument.create();
+      for (const f of window.mergeFiles) {
+        const src = await PDFDocument.load(await f.arrayBuffer());
+        const pgs = await out.copyPages(src, src.getPageIndices());
+        pgs.forEach(p => out.addPage(p));
+      }
+      window.downloadBlob(new Blob([await out.save()], {type:'application/pdf'}), 'shubham-merged.pdf');
+    };
+
+    window.splitBytes = null; window.splitCount = 0;
+    window.handleSplitPdfUpload = async function(e) {
+      const f = e.target.files[0];
+      if (f) await window.loadSplitPdfFromBytes(await f.arrayBuffer());
+    };
+    window.loadSplitPdfFromBytes = async function(bytes) {
+      window.splitBytes = bytes;
+      const pdf = await window.pdfjsLib.getDocument({ data: bytes.slice(0) }).promise;
+      window.splitCount = pdf.numPages;
+      document.getElementById('splitpdf-range').value = '1';
+      const grid = document.getElementById('splitpdf-thumbs'); grid.innerHTML = '';
+      for (let i = 1; i <= window.splitCount; i++) {
+        const p = await pdf.getPage(i), vp = p.getViewport({ scale: 0.45 });
+        const c = document.createElement('canvas'); c.width = vp.width; c.height = vp.height;
+        await p.render({ canvasContext: c.getContext('2d'), viewport: vp }).promise;
+        const d = document.createElement('div');
+        d.className = 'bg-slate-900 p-2 rounded-xl border border-slate-700 text-center cursor-pointer';
+        d.onclick = () => document.getElementById('splitpdf-range').value = String(i);
+        d.innerHTML = `<img src="${c.toDataURL()}" class="h-24 mx-auto mb-1"/><span class="text-xs text-indigo-300">Page ${i}</span>`;
+        grid.appendChild(d);
+      }
+    };
+    window.executeSplitPdf = async function() {
+      if (!window.splitBytes) await window.loadDemoForActiveTool();
+      const src = await window.PDFLib.PDFDocument.load(window.splitBytes);
+      const out = await window.PDFLib.PDFDocument.create();
+      const p = parseInt(document.getElementById('splitpdf-range').value) || 1;
+      const [cp] = await out.copyPages(src, [Math.min(Math.max(p,1), src.getPageCount()) - 1]);
+      out.addPage(cp);
+      window.downloadBlob(new Blob([await out.save()], {type:'application/pdf'}), 'shubham-page-' + p + '.pdf');
+    };
+
+    window.rotBytes = null; window.rotDeg = 90;
+    window.handleRotatePdfUpload = async function(e) {
+      const f = e.target.files[0];
+      if (f) { window.rotBytes = await f.arrayBuffer(); document.getElementById('rotatepdf-Status').textContent = 'Loaded: ' + f.name; }
+    };
+    window.rotateAllPdfPages = function(d) {
+      window.rotDeg = (window.rotDeg + d) % 360 || 90;
+      document.getElementById('rotatepdf-Status').textContent = 'Rotation set to +' + window.rotDeg + '°';
+    };
+    window.downloadRotatedPdf = async function() {
+      if (!window.rotBytes) window.rotBytes = await window.createDemoPdfBytes();
+      const { PDFDocument, degrees } = window.PDFLib;
+      const doc = await PDFDocument.load(window.rotBytes);
+      doc.getPages().forEach(p => p.setRotation(degrees(window.rotDeg)));
+      window.downloadBlob(new Blob([await doc.save()], {type:'application/pdf'}), 'shubham-rotated.pdf');
+    };
+
+    window.wmBytes = null;
+    window.handleWmPdfUpload = async function(e) {
+      const f = e.target.files[0];
+      if (f) window.wmBytes = await f.arrayBuffer();
+    };
+    window.renderWmPreview = function() {
+      const c = document.getElementById('wm-preview-canvas');
+      if (!c) return;
+      c.width = 400; c.height = 560;
+      const ctx = c.getContext('2d');
+      ctx.fillStyle = '#FFF'; ctx.fillRect(0,0,400,560);
+      ctx.save(); ctx.translate(200,280); ctx.rotate(-Math.PI/5);
+      ctx.font = 'bold 22px sans-serif'; ctx.fillStyle = 'rgba(79,70,229,0.3)'; ctx.textAlign = 'center';
+      ctx.fillText(document.getElementById('wm-text').value || 'SHUBHAM COMPUTER', 0, 0);
+      ctx.restore();
+    };
+    window.applyPdfWatermark = async function() {
+      if (!window.wmBytes) window.wmBytes = await window.createDemoPdfBytes();
+      const { PDFDocument, StandardFonts, rgb, degrees } = window.PDFLib;
+      const doc = await PDFDocument.load(window.wmBytes);
+      const font = await doc.embedFont(StandardFonts.HelveticaBold);
+      const txt = document.getElementById('wm-text').value || 'SHUBHAM COMPUTER';
+      doc.getPages().forEach(p => p.drawText(txt, { x: 100, y: 380, size: 26, font, color: rgb(0.3,0.3,0.85), opacity: 0.25, rotate: degrees(35) }));
+      window.downloadBlob(new Blob([await doc.save()], {type:'application/pdf'}), 'shubham-watermarked.pdf');
+    };
+
+    window.handlePdf2ImgUpload = async function(e) {
+      const f = e.target.files[0];
+      if (f) await window.renderPdfToImagesFromBytes(await f.arrayBuffer());
+    };
+    window.renderPdfToImagesFromBytes = async function(bytes) {
+      const grid = document.getElementById('pdf2img-grid'); grid.innerHTML = '';
+      const pdf = await window.pdfjsLib.getDocument({ data: bytes }).promise;
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const p = await pdf.getPage(i), vp = p.getViewport({ scale: 1.8 });
+        const c = document.createElement('canvas'); c.width = vp.width; c.height = vp.height;
+        await p.render({ canvasContext: c.getContext('2d'), viewport: vp }).promise;
+        const u = c.toDataURL('image/jpeg', 0.92);
+        grid.innerHTML += `<div class="bg-slate-900 p-2 rounded-xl border border-slate-700 text-center"><img src="${u}" class="max-h-36 mx-auto mb-2"/><a href="${u}" download="page-${i}.jpg" class="block py-1.5 rounded bg-indigo-600 text-white text-xs font-bold">⬇️ Page ${i} JPG</a></div>`;
+      }
+    };
+
+    window.downloadBlob = function(blob, name) {
+      const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click();
+    };
+    window.printCanvas = function(id) {
+      const u = document.getElementById(id).toDataURL('image/jpeg', 0.98);
+      const w = window.open('', '_blank');
+      w.document.write(`<img src="${u}" style="max-width:100%" onload="window.print()"/>`);
+      w.document.close();
+    };
+
+    window.addEventListener('DOMContentLoaded', () => {
+      window.renderNavigationMenus();
+      const demo = window.createDemoPortraitDataURL();
+      window.passportImg = new Image();
+      window.passportImg.onload = window.renderPassportSheet;
+      window.passportImg.src = demo;
+      window.loadResizeImage(demo, 43200);
+      window.loadSampleSignature();
+      window.renderIdCardSheet();
+      window.renderWmPreview();
+    });
+  </script>
+</body>
+</html>
