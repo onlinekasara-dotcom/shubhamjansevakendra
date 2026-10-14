@@ -1,0 +1,1999 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shubham Computer Tools — All-in-One Photo & PDF Utility Suite</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    
+    <!-- pdf-lib for client-side PDF creation, merging, splitting, rotating, and watermarking -->
+    <script src="https://unpkg.com/pdf-lib@1.17.1/dist/pdf-lib.min.js"></script>
+    
+    <!-- PDF.js for rendering real PDF page previews onto HTML5 Canvas -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#eef2ff',
+                            100: '#e0e7ff',
+                            500: '#6366f1',
+                            600: '#4f46e5',
+                            700: '#4338ca',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.4);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(99, 102, 241, 0.4);
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(99, 102, 241, 0.7);
+        }
+        .drop-zone-active {
+            border-color: #6366f1 !important;
+            background-color: rgba(99, 102, 241, 0.12) !important;
+            transform: scale(1.01);
+        }
+        .checkerboard {
+            background-color: #1e293b;
+            background-image: 
+                linear-gradient(45deg, #0f172a 25%, transparent 25%), 
+                linear-gradient(-45deg, #0f172a 25%, transparent 25%), 
+                linear-gradient(45deg, transparent 75%, #0f172a 75%), 
+                linear-gradient(-45deg, transparent 75%, #0f172a 75%);
+            background-size: 20px 20px;
+            background-position: 0 0, 0 10px, 10px -10px, -10px 0px;
+        }
+        .light .checkerboard {
+            background-color: #f8fafc;
+            background-image: 
+                linear-gradient(45deg, #e2e8f0 25%, transparent 25%), 
+                linear-gradient(-45deg, #e2e8f0 25%, transparent 25%), 
+                linear-gradient(45deg, transparent 75%, #e2e8f0 75%), 
+                linear-gradient(-45deg, transparent 75%, #e2e8f0 75%);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-200 selection:bg-indigo-500 selection:text-white">
+
+    <!-- Top Header -->
+    <header class="sticky top-0 z-30 backdrop-blur-md bg-white/80 dark:bg-slate-900/80 border-b border-slate-200 dark:border-slate-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+            <div class="flex items-center gap-3 cursor-pointer" onclick="switchTool('dashboard')">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 flex items-center justify-center shadow-lg shadow-indigo-500/25">
+                    <i data-lucide="monitor-smartphone" class="w-6 h-6 text-white"></i>
+                </div>
+                <div>
+                    <div class="flex items-center gap-2">
+                        <span class="font-bold text-lg tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400">Shubham Computer Tools</span>
+                        <span class="text-[11px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">Pro Suite</span>
+                    </div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 hidden sm:block">All-in-One Photo & PDF Utility Suite • Fast, Free & Private</p>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-2 sm:gap-3">
+                <div class="hidden md:flex items-center gap-1.5 text-xs font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-full">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    100% Client-Side • Zero Server Uploads
+                </div>
+
+                <button onclick="generateSampleAssets()" class="text-xs font-medium px-3 py-2 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/70 border border-indigo-200 dark:border-indigo-800/70 flex items-center gap-1.5 transition" title="Load sample image or PDF into the current tool">
+                    <i data-lucide="sparkles" class="w-3.5 h-3.5"></i>
+                    <span>Load Demo File</span>
+                </button>
+
+                <button onclick="toggleTheme()" class="p-2.5 rounded-xl bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition" aria-label="Toggle theme">
+                    <i data-lucide="sun" class="w-4 h-4 hidden dark:block"></i>
+                    <i data-lucide="moon" class="w-4 h-4 block dark:hidden"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <div class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col lg:flex-row gap-6">
+        
+        <!-- Navigation Sidebar / Mobile Horizontal Pill Bar -->
+        <aside class="lg:w-64 shrink-0">
+            <nav class="flex lg:flex-col gap-1.5 overflow-x-auto pb-2 lg:pb-0 lg:sticky lg:top-24">
+                <button onclick="switchTool('dashboard')" id="nav-dashboard" class="tool-nav-btn flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all">
+                    <i data-lucide="layout-grid" class="w-4 h-4 shrink-0"></i>
+                    <span>All Tools Hub</span>
+                </button>
+
+                <div class="hidden lg:block pt-3 pb-1 px-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                    Image Utilities
+                </div>
+
+                <button onclick="switchTool('resizer')" id="nav-resizer" class="tool-nav-btn flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all">
+                    <i data-lucide="scaling" class="w-4 h-4 shrink-0 text-pink-500"></i>
+                    <span>Photo Resizer & Compress</span>
+                </button>
+
+                <button onclick="switchTool('img2pdf')" id="nav-img2pdf" class="tool-nav-btn flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all">
+                    <i data-lucide="images" class="w-4 h-4 shrink-0 text-amber-500"></i>
+                    <span>Image to PDF Converter</span>
+                </button>
+
+                <div class="hidden lg:block pt-3 pb-1 px-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                    PDF Power Tools
+                </div>
+
+                <button onclick="switchTool('merge')" id="nav-merge" class="tool-nav-btn flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all">
+                    <i data-lucide="combine" class="w-4 h-4 shrink-0 text-indigo-500"></i>
+                    <span>Merge PDFs</span>
+                </button>
+
+                <button onclick="switchTool('split')" id="nav-split" class="tool-nav-btn flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all">
+                    <i data-lucide="scissors" class="w-4 h-4 shrink-0 text-emerald-500"></i>
+                    <span>Split & Extract PDF</span>
+                </button>
+
+                <button onclick="switchTool('rotate')" id="nav-rotate" class="tool-nav-btn flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all">
+                    <i data-lucide="rotate-cw" class="w-4 h-4 shrink-0 text-cyan-500"></i>
+                    <span>Rotate PDF Pages</span>
+                </button>
+
+                <button onclick="switchTool('watermark')" id="nav-watermark" class="tool-nav-btn flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all">
+                    <i data-lucide="stamp" class="w-4 h-4 shrink-0 text-purple-500"></i>
+                    <span>Watermark & Page #</span>
+                </button>
+
+                <button onclick="switchTool('pdf2img')" id="nav-pdf2img" class="tool-nav-btn flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all">
+                    <i data-lucide="file-image" class="w-4 h-4 shrink-0 text-rose-500"></i>
+                    <span>PDF to JPG / PNG</span>
+                </button>
+            </nav>
+        </aside>
+
+        <!-- Main Workspace Panel -->
+        <main class="flex-1 min-w-0">
+
+            <!-- ==================== VIEW 0: ALL TOOLS DASHBOARD ==================== -->
+            <section id="view-dashboard" class="tool-view space-y-6">
+                <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 p-6 sm:p-8 text-white shadow-xl">
+                    <div class="relative z-10 max-w-2xl space-y-3">
+                        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-xs font-semibold">
+                            <i data-lucide="zap" class="w-3.5 h-3.5"></i>
+                            <span>Shubham Computer Tools • 100% Browser Powered</span>
+                        </div>
+                        <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">
+                            Welcome to Shubham Computer Tools
+                        </h1>
+                        <p class="text-sm sm:text-base text-indigo-100 leading-relaxed">
+                            Your complete digital cyber & office utility hub: resize and compress photos to exact pixel or KB targets, convert multiple images into polished PDFs, or merge, split, rotate, watermark, and extract pages from any PDF.
+                        </p>
+                        <div class="pt-2 flex flex-wrap gap-3">
+                            <button onclick="switchTool('resizer')" class="px-4 py-2.5 rounded-xl bg-white text-indigo-700 font-semibold text-sm hover:bg-indigo-50 transition flex items-center gap-2 shadow">
+                                <i data-lucide="scaling" class="w-4 h-4"></i>
+                                Open Photo Resizer
+                            </button>
+                            <button onclick="switchTool('img2pdf')" class="px-4 py-2.5 rounded-xl bg-black/25 hover:bg-black/35 text-white font-semibold text-sm border border-white/20 transition flex items-center gap-2">
+                                <i data-lucide="images" class="w-4 h-4"></i>
+                                Image to PDF
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Grid of Tool Cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                    <!-- Card 1 -->
+                    <div onclick="switchTool('resizer')" class="group cursor-pointer rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 hover:border-pink-500/50 dark:hover:border-pink-500/50 hover:shadow-lg hover:shadow-pink-500/5 transition-all flex flex-col justify-between">
+                        <div>
+                            <div class="w-11 h-11 rounded-xl bg-pink-500/10 text-pink-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                <i data-lucide="scaling" class="w-6 h-6"></i>
+                            </div>
+                            <h3 class="font-bold text-base mb-1">Photo Resizer & Compressor</h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                                Change image dimensions (px or %), lock aspect ratio, adjust quality slider, convert between JPG/PNG/WEBP, and compare live file sizes.
+                            </p>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-semibold text-pink-500">
+                            <span>Launch Tool</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                        </div>
+                    </div>
+
+                    <!-- Card 2 -->
+                    <div onclick="switchTool('img2pdf')" class="group cursor-pointer rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 hover:border-amber-500/50 dark:hover:border-amber-500/50 hover:shadow-lg hover:shadow-amber-500/5 transition-all flex flex-col justify-between">
+                        <div>
+                            <div class="w-11 h-11 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                <i data-lucide="images" class="w-6 h-6"></i>
+                            </div>
+                            <h3 class="font-bold text-base mb-1">Image to PDF Converter</h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                                Combine multiple JPG, PNG, or WEBP photos into a single PDF. Reorder images, pick A4/Letter/Fit page size, orientation, and margins.
+                            </p>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-semibold text-amber-500">
+                            <span>Launch Tool</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                        </div>
+                    </div>
+
+                    <!-- Card 3 -->
+                    <div onclick="switchTool('merge')" class="group cursor-pointer rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 hover:border-indigo-500/50 dark:hover:border-indigo-500/50 hover:shadow-lg hover:shadow-indigo-500/5 transition-all flex flex-col justify-between">
+                        <div>
+                            <div class="w-11 h-11 rounded-xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                <i data-lucide="combine" class="w-6 h-6"></i>
+                            </div>
+                            <h3 class="font-bold text-base mb-1">Merge PDF Files</h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                                Combine multiple PDF documents into one unified file. Arrange document order and inspect page counts before merging.
+                            </p>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-semibold text-indigo-500">
+                            <span>Launch Tool</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                        </div>
+                    </div>
+
+                    <!-- Card 4 -->
+                    <div onclick="switchTool('split')" class="group cursor-pointer rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 hover:border-emerald-500/50 dark:hover:border-emerald-500/50 hover:shadow-lg hover:shadow-emerald-500/5 transition-all flex flex-col justify-between">
+                        <div>
+                            <div class="w-11 h-11 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                <i data-lucide="scissors" class="w-6 h-6"></i>
+                            </div>
+                            <h3 class="font-bold text-base mb-1">Split & Extract PDF Pages</h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                                View live thumbnails of every page in your PDF. Click pages to select or type custom page ranges (e.g., 1-3, 5) to extract a new PDF.
+                            </p>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-semibold text-emerald-500">
+                            <span>Launch Tool</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                        </div>
+                    </div>
+
+                    <!-- Card 5 -->
+                    <div onclick="switchTool('rotate')" class="group cursor-pointer rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 hover:border-cyan-500/50 dark:hover:border-cyan-500/50 hover:shadow-lg hover:shadow-cyan-500/5 transition-all flex flex-col justify-between">
+                        <div>
+                            <div class="w-11 h-11 rounded-xl bg-cyan-500/10 text-cyan-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                <i data-lucide="rotate-cw" class="w-6 h-6"></i>
+                            </div>
+                            <h3 class="font-bold text-base mb-1">Rotate PDF Pages</h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                                Rotate individual pages or all pages at once by 90°, 180°, or 270° with real-time visual preview and instant export.
+                            </p>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-semibold text-cyan-500">
+                            <span>Launch Tool</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                        </div>
+                    </div>
+
+                    <!-- Card 6 -->
+                    <div onclick="switchTool('watermark')" class="group cursor-pointer rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 hover:border-purple-500/50 dark:hover:border-purple-500/50 hover:shadow-lg hover:shadow-purple-500/5 transition-all flex flex-col justify-between">
+                        <div>
+                            <div class="w-11 h-11 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                                <i data-lucide="stamp" class="w-6 h-6"></i>
+                            </div>
+                            <h3 class="font-bold text-base mb-1">Watermark & Page Numbers</h3>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                                Stamp custom diagonal or centered text watermarks, adjust opacity/color/size, and automatically add formatted page numbers.
+                            </p>
+                        </div>
+                        <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-semibold text-purple-500">
+                            <span>Launch Tool</span>
+                            <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================== VIEW 1: PHOTO RESIZER & COMPRESSOR ==================== -->
+            <section id="view-resizer" class="tool-view hidden space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800">
+                    <div class="flex items-center gap-3.5">
+                        <div class="w-11 h-11 rounded-xl bg-pink-500/10 text-pink-500 flex items-center justify-center shrink-0">
+                            <i data-lucide="scaling" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-bold">Photo Resizer, Compressor & Format Converter</h2>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Adjust pixel dimensions, lock aspect ratio, tune compression quality, and convert formats.</p>
+                        </div>
+                    </div>
+                    <button onclick="generateSamplePhoto()" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition flex items-center gap-1.5 self-start sm:self-auto">
+                        <i data-lucide="image-plus" class="w-4 h-4 text-pink-500"></i>
+                        Load Sample Photo
+                    </button>
+                </div>
+
+                <!-- Upload Dropzone (Shown when no image loaded or to replace) -->
+                <div id="resizer-dropzone" class="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl p-8 text-center bg-white dark:bg-slate-900/60 hover:border-pink-500 dark:hover:border-pink-500 transition cursor-pointer" onclick="document.getElementById('resizer-file-input').click()">
+                    <input type="file" id="resizer-file-input" accept="image/jpeg,image/png,image/webp" class="hidden" onchange="handleResizerFile(this.files[0])">
+                    <div class="w-14 h-14 rounded-2xl bg-pink-500/10 text-pink-500 flex items-center justify-center mx-auto mb-3">
+                        <i data-lucide="upload-cloud" class="w-7 h-7"></i>
+                    </div>
+                    <p class="font-semibold text-sm sm:text-base">Click or drag & drop an image here</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-1">Supports JPG, PNG, WEBP • Instant live preview & file size comparison</p>
+                </div>
+
+                <!-- Workspace (Controls + Preview) -->
+                <div id="resizer-workspace" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <!-- Controls Column -->
+                    <div class="lg:col-span-5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 space-y-5">
+                        <div class="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+                            <span class="font-bold text-sm flex items-center gap-2">
+                                <i data-lucide="sliders-horizontal" class="w-4 h-4 text-pink-500"></i>
+                                Resize & Compression Settings
+                            </span>
+                            <button onclick="document.getElementById('resizer-file-input').click()" class="text-xs text-pink-500 hover:underline font-medium">Change Image</button>
+                        </div>
+
+                        <!-- Quick Dimension Presets -->
+                        <div>
+                            <label class="block text-xs font-semibold uppercase tracking-wider text-slate-400 mb-2">Quick Scale Presets</label>
+                            <div class="grid grid-cols-4 gap-2">
+                                <button onclick="applyResizerScale(0.25)" class="py-1.5 px-2 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-800 hover:bg-pink-500 hover:text-white transition">25%</button>
+                                <button onclick="applyResizerScale(0.50)" class="py-1.5 px-2 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-800 hover:bg-pink-500 hover:text-white transition">50%</button>
+                                <button onclick="applyResizerScale(0.75)" class="py-1.5 px-2 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-800 hover:bg-pink-500 hover:text-white transition">75%</button>
+                                <button onclick="applyResizerScale(1.0)" class="py-1.5 px-2 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-800 hover:bg-pink-500 hover:text-white transition">100%</button>
+                            </div>
+                        </div>
+
+                        <!-- Width & Height Inputs -->
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Width (px)</label>
+                                <input type="number" id="resizer-width" min="1" max="10000" oninput="onResizerDimChange('w')" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-pink-500">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Height (px)</label>
+                                <input type="number" id="resizer-height" min="1" max="10000" oninput="onResizerDimChange('h')" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-pink-500">
+                            </div>
+                        </div>
+
+                        <!-- Lock Aspect Ratio Toggle -->
+                        <div class="flex items-center justify-between bg-slate-50 dark:bg-slate-800/60 px-3.5 py-2.5 rounded-xl">
+                            <label for="resizer-lock-aspect" class="text-xs font-medium flex items-center gap-2 cursor-pointer">
+                                <i data-lucide="lock" class="w-3.5 h-3.5 text-pink-500"></i>
+                                Lock Aspect Ratio
+                            </label>
+                            <input type="checkbox" id="resizer-lock-aspect" checked onchange="onResizerDimChange('w')" class="w-4 h-4 accent-pink-500 rounded cursor-pointer">
+                        </div>
+
+                        <!-- Social / Standard Presets -->
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Standard Size Templates</label>
+                            <select id="resizer-preset-select" onchange="applyStandardPreset(this.value)" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-pink-500">
+                                <option value="">Custom Dimensions</option>
+                                <option value="1920x1080">Full HD (1920 × 1080 px)</option>
+                                <option value="1280x720">HD 720p (1280 × 720 px)</option>
+                                <option value="1080x1080">Instagram Square (1080 × 1080 px)</option>
+                                <option value="800x600">Web Standard (800 × 600 px)</option>
+                                <option value="413x531">Passport Photo (413 × 531 px)</option>
+                                <option value="300x300">Profile Avatar (300 × 300 px)</option>
+                            </select>
+                        </div>
+
+                        <!-- Output Format -->
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1.5">Output Image Format</label>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button type="button" onclick="setResizerFormat('image/jpeg')" id="fmt-jpeg" class="fmt-btn py-2 rounded-xl text-xs font-semibold border border-pink-500 bg-pink-500/10 text-pink-500">JPG</button>
+                                <button type="button" onclick="setResizerFormat('image/webp')" id="fmt-webp" class="fmt-btn py-2 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700">WEBP</button>
+                                <button type="button" onclick="setResizerFormat('image/png')" id="fmt-png" class="fmt-btn py-2 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700">PNG</button>
+                            </div>
+                        </div>
+
+                        <!-- Quality Slider -->
+                        <div id="resizer-quality-wrap">
+                            <div class="flex justify-between text-xs font-medium mb-1">
+                                <span>Compression Quality</span>
+                                <span id="resizer-quality-label" class="font-bold text-pink-500">85%</span>
+                            </div>
+                            <input type="range" id="resizer-quality" min="5" max="100" value="85" oninput="updateResizerPreview()" class="w-full accent-pink-500 cursor-pointer">
+                            <div class="flex justify-between text-[10px] text-slate-400">
+                                <span>Smallest File (5%)</span>
+                                <span>Balanced</span>
+                                <span>Max Quality (100%)</span>
+                            </div>
+                        </div>
+
+                        <!-- File Size Comparison Card -->
+                        <div class="p-4 rounded-xl bg-slate-50 dark:bg-slate-800/80 border border-slate-200 dark:border-slate-700/80 space-y-2">
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="text-slate-500 dark:text-slate-400">Original File:</span>
+                                <span id="resizer-orig-info" class="font-semibold">—</span>
+                            </div>
+                            <div class="flex items-center justify-between text-xs">
+                                <span class="text-slate-500 dark:text-slate-400">New Output Size:</span>
+                                <span id="resizer-new-info" class="font-bold text-emerald-500">—</span>
+                            </div>
+                            <div class="flex items-center justify-between text-xs pt-1 border-t border-slate-200 dark:border-slate-700">
+                                <span class="text-slate-500 dark:text-slate-400">Size Difference:</span>
+                                <span id="resizer-savings-badge" class="px-2 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/15 text-emerald-500">—</span>
+                            </div>
+                        </div>
+
+                        <!-- Download Action -->
+                        <button onclick="downloadResizedImage()" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-pink-500 to-rose-600 hover:from-pink-600 hover:to-rose-700 text-white font-bold text-sm shadow-lg shadow-pink-500/25 flex items-center justify-center gap-2 transition">
+                            <i data-lucide="download" class="w-4 h-4"></i>
+                            <span>Download Resized Image</span>
+                        </button>
+                    </div>
+
+                    <!-- Live Preview Column -->
+                    <div class="lg:col-span-7 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 flex flex-col">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="font-bold text-sm flex items-center gap-2">
+                                <i data-lucide="eye" class="w-4 h-4 text-pink-500"></i>
+                                Live Compressed Output Preview
+                            </span>
+                            <span id="resizer-dim-badge" class="text-xs font-mono px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-slate-600 dark:text-slate-300">0 × 0 px</span>
+                        </div>
+
+                        <div class="flex-1 min-h-[320px] rounded-xl checkerboard border border-slate-200 dark:border-slate-800 flex items-center justify-center p-4 overflow-hidden">
+                            <img id="resizer-preview-img" alt="Live Resized Preview" class="max-h-[440px] max-w-full object-contain rounded shadow-md">
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================== VIEW 2: IMAGE TO PDF CONVERTER ==================== -->
+            <section id="view-img2pdf" class="tool-view hidden space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800">
+                    <div class="flex items-center gap-3.5">
+                        <div class="w-11 h-11 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center shrink-0">
+                            <i data-lucide="images" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-bold">Image to PDF Converter</h2>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Upload multiple photos, arrange order, customize page size & margins, and generate a crisp PDF.</p>
+                        </div>
+                    </div>
+                    <button onclick="generateSampleImagesForPdf()" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition flex items-center gap-1.5 self-start sm:self-auto">
+                        <i data-lucide="sparkles" class="w-4 h-4 text-amber-500"></i>
+                        Add 3 Demo Images
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <!-- Left: Image Queue & Upload -->
+                    <div class="lg:col-span-8 space-y-4">
+                        <div id="img2pdf-dropzone" class="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl p-6 text-center bg-white dark:bg-slate-900/60 hover:border-amber-500 transition cursor-pointer" onclick="document.getElementById('img2pdf-file-input').click()">
+                            <input type="file" id="img2pdf-file-input" accept="image/jpeg,image/png,image/webp" multiple class="hidden" onchange="handleImg2PdfFiles(this.files)">
+                            <div class="w-12 h-12 rounded-2xl bg-amber-500/10 text-amber-500 flex items-center justify-center mx-auto mb-2">
+                                <i data-lucide="image-plus" class="w-6 h-6"></i>
+                            </div>
+                            <p class="font-semibold text-sm">Click or drop multiple images here (JPG, PNG, WEBP)</p>
+                            <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Add as many pages as you want and reorder them freely</p>
+                        </div>
+
+                        <!-- Image Grid List -->
+                        <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5">
+                            <div class="flex items-center justify-between mb-4">
+                                <h3 class="font-bold text-sm flex items-center gap-2">
+                                    <span>Selected Images Queue</span>
+                                    <span id="img2pdf-count-badge" class="px-2 py-0.5 text-xs rounded-full bg-amber-500/15 text-amber-500 font-bold">0</span>
+                                </h3>
+                                <button onclick="clearImg2PdfQueue()" class="text-xs text-rose-500 hover:underline font-medium">Clear All</button>
+                            </div>
+
+                            <div id="img2pdf-empty" class="py-12 text-center text-slate-400 text-xs">
+                                No images added yet. Upload photos above or click "Add 3 Demo Images".
+                            </div>
+
+                            <div id="img2pdf-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-4"></div>
+                        </div>
+                    </div>
+
+                    <!-- Right: PDF Layout Settings -->
+                    <div class="lg:col-span-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 space-y-5 h-fit">
+                        <h3 class="font-bold text-sm flex items-center gap-2 border-b border-slate-100 dark:border-slate-800 pb-3">
+                            <i data-lucide="settings-2" class="w-4 h-4 text-amber-500"></i>
+                            PDF Page Configuration
+                        </h3>
+
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1.5">Page Size</label>
+                            <select id="img2pdf-pagesize" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-amber-500">
+                                <option value="A4">A4 Standard (210 × 297 mm)</option>
+                                <option value="LETTER">US Letter (8.5 × 11 in)</option>
+                                <option value="FIT">Fit Page to Exact Image Size</option>
+                            </select>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1.5">Page Orientation</label>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button type="button" onclick="setImg2PdfOrientation('auto')" id="orient-auto" class="orient-btn py-2 rounded-xl text-xs font-semibold border border-amber-500 bg-amber-500/10 text-amber-500">Auto</button>
+                                <button type="button" onclick="setImg2PdfOrientation('portrait')" id="orient-portrait" class="orient-btn py-2 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700">Portrait</button>
+                                <button type="button" onclick="setImg2PdfOrientation('landscape')" id="orient-landscape" class="orient-btn py-2 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700">Landscape</button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1.5">Page Margin</label>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button type="button" onclick="setImg2PdfMargin(0)" id="margin-0" class="margin-btn py-2 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700">None</button>
+                                <button type="button" onclick="setImg2PdfMargin(24)" id="margin-24" class="margin-btn py-2 rounded-xl text-xs font-semibold border border-amber-500 bg-amber-500/10 text-amber-500">Small</button>
+                                <button type="button" onclick="setImg2PdfMargin(50)" id="margin-50" class="margin-btn py-2 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700">Large</button>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Output Filename</label>
+                            <input type="text" id="img2pdf-filename" value="converted-images.pdf" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-amber-500">
+                        </div>
+
+                        <button onclick="generatePdfFromImages()" id="img2pdf-generate-btn" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 hover:from-amber-600 hover:to-orange-700 text-white font-bold text-sm shadow-lg shadow-amber-500/25 flex items-center justify-center gap-2 transition">
+                            <i data-lucide="file-down" class="w-4 h-4"></i>
+                            <span>Generate & Download PDF</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================== VIEW 3: MERGE PDFS ==================== -->
+            <section id="view-merge" class="tool-view hidden space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800">
+                    <div class="flex items-center gap-3.5">
+                        <div class="w-11 h-11 rounded-xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center shrink-0">
+                            <i data-lucide="combine" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-bold">Merge Multiple PDF Files</h2>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Combine two or more PDF documents into a single PDF in your preferred order.</p>
+                        </div>
+                    </div>
+                    <button onclick="generateSamplePdfsForMerge()" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition flex items-center gap-1.5 self-start sm:self-auto">
+                        <i data-lucide="sparkles" class="w-4 h-4 text-indigo-500"></i>
+                        Add 2 Sample PDFs
+                    </button>
+                </div>
+
+                <div id="merge-dropzone" class="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl p-6 text-center bg-white dark:bg-slate-900/60 hover:border-indigo-500 transition cursor-pointer" onclick="document.getElementById('merge-file-input').click()">
+                    <input type="file" id="merge-file-input" accept="application/pdf" multiple class="hidden" onchange="handleMergeFiles(this.files)">
+                    <div class="w-12 h-12 rounded-2xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center mx-auto mb-2">
+                        <i data-lucide="file-plus-2" class="w-6 h-6"></i>
+                    </div>
+                    <p class="font-semibold text-sm">Click or drag & drop PDF files here to merge</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Add multiple PDFs, reorder them up/down, and merge into one file</p>
+                </div>
+
+                <div class="bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <h3 class="font-bold text-sm">PDF Documents to Merge</h3>
+                            <span id="merge-summary-badge" class="px-2.5 py-0.5 text-xs rounded-full bg-indigo-500/15 text-indigo-500 font-bold">0 files • 0 pages</span>
+                        </div>
+                        <button onclick="clearMergeList()" class="text-xs text-rose-500 hover:underline font-medium">Clear Queue</button>
+                    </div>
+
+                    <div id="merge-empty" class="py-10 text-center text-slate-400 text-xs">
+                        No PDF files added yet. Upload at least 2 PDFs or click "Add 2 Sample PDFs".
+                    </div>
+
+                    <div id="merge-list" class="space-y-2.5"></div>
+
+                    <div class="pt-3 border-t border-slate-100 dark:border-slate-800 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
+                        <div class="flex items-center gap-2 flex-1">
+                            <span class="text-xs text-slate-500 whitespace-nowrap">Output Name:</span>
+                            <input type="text" id="merge-filename" value="merged-document.pdf" class="px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium w-full sm:max-w-xs">
+                        </div>
+                        <button onclick="executeMergePdfs()" class="py-2.5 px-6 rounded-xl bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 text-white font-bold text-sm shadow-lg shadow-indigo-500/25 flex items-center justify-center gap-2 transition">
+                            <i data-lucide="combine" class="w-4 h-4"></i>
+                            <span>Merge & Download PDF</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================== VIEW 4: SPLIT / EXTRACT PDF ==================== -->
+            <section id="view-split" class="tool-view hidden space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800">
+                    <div class="flex items-center gap-3.5">
+                        <div class="w-11 h-11 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center shrink-0">
+                            <i data-lucide="scissors" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-bold">Split & Extract PDF Pages</h2>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Click page thumbnails or type page ranges (e.g. 1-3, 5) to extract into a new PDF.</p>
+                        </div>
+                    </div>
+                    <button onclick="loadSamplePdfForTool('split')" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition flex items-center gap-1.5 self-start sm:self-auto">
+                        <i data-lucide="sparkles" class="w-4 h-4 text-emerald-500"></i>
+                        Load 5-Page Sample PDF
+                    </button>
+                </div>
+
+                <div id="split-dropzone" class="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl p-6 text-center bg-white dark:bg-slate-900/60 hover:border-emerald-500 transition cursor-pointer" onclick="document.getElementById('split-file-input').click()">
+                    <input type="file" id="split-file-input" accept="application/pdf" class="hidden" onchange="handleSplitFile(this.files[0])">
+                    <div class="w-12 h-12 rounded-2xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center mx-auto mb-2">
+                        <i data-lucide="file-Spreadsheet" class="w-6 h-6"></i>
+                    </div>
+                    <p class="font-semibold text-sm">Click or drop a PDF file to inspect & extract pages</p>
+                </div>
+
+                <div id="split-workspace" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <div class="lg:col-span-8 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 space-y-4">
+                        <div class="flex flex-wrap items-center justify-between gap-2">
+                            <span class="font-bold text-sm">Click Pages to Toggle Selection</span>
+                            <div class="flex gap-2">
+                                <button onclick="selectAllSplitPages(true)" class="text-xs px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-emerald-500 hover:text-white transition font-medium">Select All</button>
+                                <button onclick="selectAllSplitPages(false)" class="text-xs px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-rose-500 hover:text-white transition font-medium">Deselect All</button>
+                            </div>
+                        </div>
+
+                        <div id="split-pages-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 max-h-[500px] overflow-y-auto p-1"></div>
+                    </div>
+
+                    <div class="lg:col-span-4 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 space-y-4 h-fit">
+                        <h3 class="font-bold text-sm border-b border-slate-100 dark:border-slate-800 pb-3">Extraction Controls</h3>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Page Range / Selection</label>
+                            <input type="text" id="split-range-input" placeholder="e.g., 1-3, 5" oninput="syncSplitRangeFromInput()" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-mono focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                            <p class="text-[11px] text-slate-400 mt-1">Use commas and hyphens (e.g. <code class="text-emerald-500">1-2, 4</code>) or click thumbnails directly.</p>
+                        </div>
+
+                        <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/70 text-xs flex justify-between">
+                            <span class="text-slate-500">Selected Pages Count:</span>
+                            <span id="split-selected-count" class="font-bold text-emerald-500">0 pages</span>
+                        </div>
+
+                        <button onclick="executeExtractPdfPages()" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700 text-white font-bold text-sm shadow-lg shadow-emerald-500/25 flex items-center justify-center gap-2 transition">
+                            <i data-lucide="download" class="w-4 h-4"></i>
+                            <span>Extract Selected to New PDF</span>
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================== VIEW 5: ROTATE PDF PAGES ==================== -->
+            <section id="view-rotate" class="tool-view hidden space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800">
+                    <div class="flex items-center gap-3.5">
+                        <div class="w-11 h-11 rounded-xl bg-cyan-500/10 text-cyan-500 flex items-center justify-center shrink-0">
+                            <i data-lucide="rotate-cw" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-bold">Rotate PDF Pages</h2>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Rotate all pages at once or rotate individual pages 90° clockwise/counter-clockwise.</p>
+                        </div>
+                    </div>
+                    <button onclick="loadSamplePdfForTool('rotate')" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition flex items-center gap-1.5 self-start sm:self-auto">
+                        <i data-lucide="sparkles" class="w-4 h-4 text-cyan-500"></i>
+                        Load Sample PDF
+                    </button>
+                </div>
+
+                <div id="rotate-dropzone" class="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl p-6 text-center bg-white dark:bg-slate-900/60 hover:border-cyan-500 transition cursor-pointer" onclick="document.getElementById('rotate-file-input').click()">
+                    <input type="file" id="rotate-file-input" accept="application/pdf" class="hidden" onchange="handleRotateFile(this.files[0])">
+                    <div class="w-12 h-12 rounded-2xl bg-cyan-500/10 text-cyan-500 flex items-center justify-center mx-auto mb-2">
+                        <i data-lucide="rotate-cw" class="w-6 h-6"></i>
+                    </div>
+                    <p class="font-semibold text-sm">Click or drop a PDF file here to rotate pages</p>
+                </div>
+
+                <div id="rotate-workspace" class="hidden bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 space-y-5">
+                    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-4">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <button onclick="rotateAllPdfPages(-90)" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-cyan-500 hover:text-white transition flex items-center gap-1.5">
+                                <i data-lucide="rotate-ccw" class="w-3.5 h-3.5"></i>
+                                Rotate All Left (-90°)
+                            </button>
+                            <button onclick="rotateAllPdfPages(90)" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-cyan-500 hover:text-white transition flex items-center gap-1.5">
+                                <i data-lucide="rotate-cw" class="w-3.5 h-3.5"></i>
+                                Rotate All Right (+90°)
+                            </button>
+                            <button onclick="resetAllRotations()" class="px-3 py-2 rounded-xl text-xs font-medium text-slate-500 hover:text-rose-500 transition">
+                                Reset Angles
+                            </button>
+                        </div>
+
+                        <button onclick="saveRotatedPdf()" class="py-2.5 px-5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-600 hover:to-blue-700 text-white font-bold text-xs sm:text-sm shadow-lg shadow-cyan-500/25 flex items-center gap-2 transition">
+                            <i data-lucide="download" class="w-4 h-4"></i>
+                            <span>Download Rotated PDF</span>
+                        </button>
+                    </div>
+
+                    <div id="rotate-pages-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4"></div>
+                </div>
+            </section>
+
+            <!-- ==================== VIEW 6: WATERMARK & PAGE NUMBERS ==================== -->
+            <section id="view-watermark" class="tool-view hidden space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800">
+                    <div class="flex items-center gap-3.5">
+                        <div class="w-11 h-11 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center shrink-0">
+                            <i data-lucide="stamp" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-bold">Add Watermark & Page Numbers to PDF</h2>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Stamp custom text watermarks and formatted footer page numbers across your PDF.</p>
+                        </div>
+                    </div>
+                    <button onclick="loadSamplePdfForTool('watermark')" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition flex items-center gap-1.5 self-start sm:self-auto">
+                        <i data-lucide="sparkles" class="w-4 h-4 text-purple-500"></i>
+                        Load Sample PDF
+                    </button>
+                </div>
+
+                <div id="watermark-dropzone" class="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl p-6 text-center bg-white dark:bg-slate-900/60 hover:border-purple-500 transition cursor-pointer" onclick="document.getElementById('watermark-file-input').click()">
+                    <input type="file" id="watermark-file-input" accept="application/pdf" class="hidden" onchange="handleWatermarkFile(this.files[0])">
+                    <div class="w-12 h-12 rounded-2xl bg-purple-500/10 text-purple-500 flex items-center justify-center mx-auto mb-2">
+                        <i data-lucide="stamp" class="w-6 h-6"></i>
+                    </div>
+                    <p class="font-semibold text-sm">Click or drop a PDF file here to add watermarks or page numbers</p>
+                </div>
+
+                <div id="watermark-workspace" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <div class="lg:col-span-5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 space-y-4">
+                        <h3 class="font-bold text-sm border-b border-slate-100 dark:border-slate-800 pb-3">Watermark & Numbering Options</h3>
+
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Watermark Text (leave blank for none)</label>
+                            <input type="text" id="wm-text" value="SHUBHAM COMPUTER TOOLS" placeholder="e.g., SHUBHAM COMPUTER TOOLS" oninput="drawWatermarkLivePreview()" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-purple-500">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Font Size</label>
+                                <input type="number" id="wm-size" value="38" min="10" max="120" oninput="drawWatermarkLivePreview()" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Text Color</label>
+                                <select id="wm-color" onchange="drawWatermarkLivePreview()" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold">
+                                    <option value="red">Crimson Red</option>
+                                    <option value="gray">Slate Gray</option>
+                                    <option value="blue">Royal Blue</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-xs mb-1">
+                                <span>Watermark Opacity</span>
+                                <span id="wm-opacity-val" class="font-bold text-purple-500">25%</span>
+                            </div>
+                            <input type="range" id="wm-opacity" min="5" max="90" value="25" oninput="drawWatermarkLivePreview()" class="w-full accent-purple-500">
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Watermark Style</label>
+                            <select id="wm-style" onchange="drawWatermarkLivePreview()" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold">
+                                <option value="diagonal">Diagonal Stamp (45° Center)</option>
+                                <option value="horizontal">Horizontal Center</option>
+                                <option value="top">Top Header Banner</option>
+                            </select>
+                        </div>
+
+                        <div class="flex items-center justify-between bg-slate-50 dark:bg-slate-800/60 px-3.5 py-2.5 rounded-xl">
+                            <label for="wm-pagenums" class="text-xs font-medium flex items-center gap-2 cursor-pointer">
+                                <i data-lucide="hash" class="w-3.5 h-3.5 text-purple-500"></i>
+                                Include Footer Page Numbers (Page X of Y)
+                            </label>
+                            <input type="checkbox" id="wm-pagenums" checked onchange="drawWatermarkLivePreview()" class="w-4 h-4 accent-purple-500 rounded cursor-pointer">
+                        </div>
+
+                        <button onclick="applyWatermarkAndDownload()" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-purple-500 to-indigo-600 hover:from-purple-600 hover:to-indigo-700 text-white font-bold text-sm shadow-lg shadow-purple-500/25 flex items-center justify-center gap-2 transition">
+                            <i data-lucide="download" class="w-4 h-4"></i>
+                            <span>Stamp & Download PDF</span>
+                        </button>
+                    </div>
+
+                    <div class="lg:col-span-7 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 flex flex-col items-center justify-center">
+                        <div class="w-full flex items-center justify-between mb-3">
+                            <span class="font-bold text-sm">Page 1 Live Stamp Preview</span>
+                            <span id="wm-file-badge" class="text-xs text-slate-400"></span>
+                        </div>
+                        <div class="checkerboard w-full rounded-xl p-4 flex items-center justify-center min-h-[360px]">
+                            <canvas id="wm-preview-canvas" class="max-h-[420px] max-w-full rounded shadow-lg bg-white"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================== VIEW 7: PDF TO JPG / PNG ==================== -->
+            <section id="view-pdf2img" class="tool-view hidden space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800">
+                    <div class="flex items-center gap-3.5">
+                        <div class="w-11 h-11 rounded-xl bg-rose-500/10 text-rose-500 flex items-center justify-center shrink-0">
+                            <i data-lucide="file-image" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-bold">PDF to High-Resolution Images</h2>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Render every page of a PDF document into downloadable high-DPI PNG or JPG images.</p>
+                        </div>
+                    </div>
+                    <button onclick="loadSamplePdfForTool('pdf2img')" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition flex items-center gap-1.5 self-start sm:self-auto">
+                        <i data-lucide="sparkles" class="w-4 h-4 text-rose-500"></i>
+                        Load Sample PDF
+                    </button>
+                </div>
+
+                <div id="pdf2img-dropzone" class="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl p-6 text-center bg-white dark:bg-slate-900/60 hover:border-rose-500 transition cursor-pointer" onclick="document.getElementById('pdf2img-file-input').click()">
+                    <input type="file" id="pdf2img-file-input" accept="application/pdf" class="hidden" onchange="handlePdf2ImgFile(this.files[0])">
+                    <div class="w-12 h-12 rounded-2xl bg-rose-500/10 text-rose-500 flex items-center justify-center mx-auto mb-2">
+                        <i data-lucide="file-image" class="w-6 h-6"></i>
+                    </div>
+                    <p class="font-semibold text-sm">Click or drop a PDF file to convert pages into images</p>
+                </div>
+
+                <div id="pdf2img-workspace" class="hidden bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 space-y-4">
+                    <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 dark:border-slate-800 pb-3">
+                        <span class="font-bold text-sm">Rendered PDF Pages (Click any page to download image)</span>
+                        <button onclick="downloadAllPdfImages()" class="py-2 px-4 rounded-xl bg-rose-500 hover:bg-rose-600 text-white font-bold text-xs flex items-center gap-1.5 shadow">
+                            <i data-lucide="download" class="w-3.5 h-3.5"></i>
+                            Download All Pages as JPG
+                        </button>
+                    </div>
+                    <div id="pdf2img-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4"></div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Notification Toast Container -->
+    <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none px-4 sm:px-0"></div>
+
+    <script>
+        // Configure PDF.js worker
+        if (window.pdfjsLib) {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js';
+        }
+
+        // Global Application State
+        let currentTool = 'dashboard';
+
+        // Tool 1: Resizer State
+        let resizerState = {
+            originalFile: null,
+            originalImg: null,
+            origWidth: 0,
+            origHeight: 0,
+            aspectRatio: 1,
+            format: 'image/jpeg',
+            currentBlobUrl: null
+        };
+
+        // Tool 2: Image to PDF State
+        let img2PdfState = {
+            items: [], // { id, name, dataUrl, width, height, size }
+            orientation: 'auto',
+            margin: 24
+        };
+
+        // Tool 3: Merge PDFs State
+        let mergeState = {
+            files: [] // { id, name, size, arrayBuffer, pageCount }
+        };
+
+        // Tool 4: Split PDF State
+        let splitState = {
+            fileName: '',
+            arrayBuffer: null,
+            pageCount: 0,
+            selectedPages: new Set() // 1-indexed page numbers
+        };
+
+        // Tool 5: Rotate PDF State
+        let rotateState = {
+            fileName: '',
+            arrayBuffer: null,
+            pageCount: 0,
+            rotations: [] // degrees per page index
+        };
+
+        // Tool 6: Watermark PDF State
+        let watermarkState = {
+            fileName: '',
+            arrayBuffer: null,
+            pageCount: 0,
+            firstPageImageCanvas: null
+        };
+
+        // Tool 7: PDF to Image State
+        let pdf2ImgState = {
+            fileName: '',
+            dataUrls: []
+        };
+
+        // Format bytes nicely
+        function formatBytes(bytes) {
+            if (bytes === 0) return '0 B';
+            const k = 1024;
+            const sizes = ['B', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        // Custom non-blocking Toast Message (Replaces alert)
+        function showToast(message, type = 'success') {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            const colors = {
+                success: 'bg-emerald-600 text-white',
+                info: 'bg-indigo-600 text-white',
+                error: 'bg-rose-600 text-white'
+            };
+            toast.className = `pointer-events-auto flex items-center justify-between gap-3 px-4 py-3 rounded-xl shadow-xl text-xs font-semibold transition-all duration-300 ${colors[type] || colors.info}`;
+            toast.innerHTML = `
+                <span>${message}</span>
+                <button onclick="this.parentElement.remove()" class="opacity-80 hover:opacity-100">✕</button>
+            `;
+            container.appendChild(toast);
+            setTimeout(() => {
+                if (toast && toast.parentElement) toast.remove();
+            }, 4000);
+        }
+
+        // Theme Toggle
+        function toggleTheme() {
+            document.documentElement.classList.toggle('dark');
+            document.documentElement.classList.toggle('light');
+        }
+
+        // Tool Switcher
+        function switchTool(toolId) {
+            currentTool = toolId;
+            document.querySelectorAll('.tool-view').forEach(el => el.classList.add('hidden'));
+            const target = document.getElementById(`view-${toolId}`);
+            if (target) target.classList.remove('hidden');
+
+            document.querySelectorAll('.tool-nav-btn').forEach(btn => {
+                btn.className = 'tool-nav-btn flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all text-slate-600 dark:text-slate-400 hover:bg-slate-200/60 dark:hover:bg-slate-800/60';
+            });
+            const activeBtn = document.getElementById(`nav-${toolId}`);
+            if (activeBtn) {
+                activeBtn.className = 'tool-nav-btn flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold whitespace-nowrap transition-all bg-indigo-600 text-white shadow-md shadow-indigo-500/25';
+            }
+            lucide.createIcons();
+        }
+
+        /* ==================== TOOL 1: PHOTO RESIZER LOGIC ==================== */
+        function handleResizerFile(file) {
+            if (!file || !file.type.startsWith('image/')) {
+                showToast('Please select a valid JPG, PNG, or WEBP image.', 'error');
+                return;
+            }
+            resizerState.originalFile = file;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    resizerState.originalImg = img;
+                    resizerState.origWidth = img.naturalWidth;
+                    resizerState.origHeight = img.naturalHeight;
+                    resizerState.aspectRatio = img.naturalWidth / img.naturalHeight;
+
+                    document.getElementById('resizer-width').value = img.naturalWidth;
+                    document.getElementById('resizer-height').value = img.naturalHeight;
+                    document.getElementById('resizer-orig-info').textContent = `${img.naturalWidth}×${img.naturalHeight} • ${formatBytes(file.size)}`;
+                    document.getElementById('resizer-workspace').classList.remove('hidden');
+
+                    updateResizerPreview();
+                    showToast('Photo loaded! Adjust sliders or dimensions for instant preview.');
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function onResizerDimChange(changedAxis) {
+            if (!resizerState.originalImg) return;
+            const wInput = document.getElementById('resizer-width');
+            const hInput = document.getElementById('resizer-height');
+            const locked = document.getElementById('resizer-lock-aspect').checked;
+
+            let w = parseInt(wInput.value) || 1;
+            let h = parseInt(hInput.value) || 1;
+
+            if (locked) {
+                if (changedAxis === 'w') {
+                    h = Math.max(1, Math.round(w / resizerState.aspectRatio));
+                    hInput.value = h;
+                } else {
+                    w = Math.max(1, Math.round(h * resizerState.aspectRatio));
+                    wInput.value = w;
+                }
+            }
+            document.getElementById('resizer-preset-select').value = '';
+            updateResizerPreview();
+        }
+
+        function applyResizerScale(factor) {
+            if (!resizerState.originalImg) return;
+            document.getElementById('resizer-width').value = Math.max(1, Math.round(resizerState.origWidth * factor));
+            document.getElementById('resizer-height').value = Math.max(1, Math.round(resizerState.origHeight * factor));
+            updateResizerPreview();
+        }
+
+        function applyStandardPreset(val) {
+            if (!val || !resizerState.originalImg) return;
+            const [w, h] = val.split('x').map(Number);
+            document.getElementById('resizer-lock-aspect').checked = false;
+            document.getElementById('resizer-width').value = w;
+            document.getElementById('resizer-height').value = h;
+            updateResizerPreview();
+        }
+
+        function setResizerFormat(mime) {
+            resizerState.format = mime;
+            document.querySelectorAll('.fmt-btn').forEach(btn => {
+                btn.className = 'fmt-btn py-2 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700';
+            });
+            const idMap = { 'image/jpeg': 'fmt-jpeg', 'image/webp': 'fmt-webp', 'image/png': 'fmt-png' };
+            const active = document.getElementById(idMap[mime]);
+            if (active) {
+                active.className = 'fmt-btn py-2 rounded-xl text-xs font-semibold border border-pink-500 bg-pink-500/10 text-pink-500';
+            }
+            // PNG is lossless in canvas.toBlob, toggle quality visibility
+            document.getElementById('resizer-quality-wrap').style.opacity = mime === 'image/png' ? '0.45' : '1';
+            updateResizerPreview();
+        }
+
+        function updateResizerPreview() {
+            if (!resizerState.originalImg) return;
+            const w = Math.min(8000, Math.max(1, parseInt(document.getElementById('resizer-width').value) || 1));
+            const h = Math.min(8000, Math.max(1, parseInt(document.getElementById('resizer-height').value) || 1));
+            const q = (parseInt(document.getElementById('resizer-quality').value) || 85) / 100;
+
+            document.getElementById('resizer-quality-label').textContent = `${Math.round(q * 100)}%`;
+            document.getElementById('resizer-dim-badge').textContent = `${w} × ${h} px`;
+
+            const canvas = document.createElement('canvas');
+            canvas.width = w;
+            canvas.height = h;
+            const ctx = canvas.getContext('2d');
+
+            // Fill white background for JPEG so transparent PNGs don't turn black
+            if (resizerState.format === 'image/jpeg') {
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fillRect(0, 0, w, h);
+            }
+            ctx.imageSmoothingEnabled = true;
+            ctx.imageSmoothingQuality = 'high';
+            ctx.drawImage(resizerState.originalImg, 0, 0, w, h);
+
+            canvas.toBlob((blob) => {
+                if (!blob) return;
+                if (resizerState.currentBlobUrl) URL.revokeObjectURL(resizerState.currentBlobUrl);
+                resizerState.currentBlobUrl = URL.createObjectURL(blob);
+                document.getElementById('resizer-preview-img').src = resizerState.currentBlobUrl;
+
+                const ext = resizerState.format.split('/')[1].toUpperCase();
+                document.getElementById('resizer-new-info').textContent = `${ext} • ${formatBytes(blob.size)}`;
+
+                const origSize = resizerState.originalFile ? resizerState.originalFile.size : blob.size;
+                const diffPct = (((blob.size - origSize) / origSize) * 100).toFixed(1);
+                const badge = document.getElementById('resizer-savings-badge');
+                if (blob.size <= origSize) {
+                    badge.textContent = `Saved ${Math.abs(diffPct)}% (${formatBytes(origSize - blob.size)})`;
+                    badge.className = 'px-2 py-0.5 rounded-full text-[11px] font-bold bg-emerald-500/15 text-emerald-500';
+                } else {
+                    badge.textContent = `+${diffPct}% larger`;
+                    badge.className = 'px-2 py-0.5 rounded-full text-[11px] font-bold bg-amber-500/15 text-amber-500';
+                }
+            }, resizerState.format, q);
+        }
+
+        function downloadResizedImage() {
+            if (!resizerState.currentBlobUrl) {
+                showToast('Load an image first!', 'error');
+                return;
+            }
+            const extMap = { 'image/jpeg': 'jpg', 'image/webp': 'webp', 'image/png': 'png' };
+            const ext = extMap[resizerState.format] || 'jpg';
+            const w = document.getElementById('resizer-width').value;
+            const h = document.getElementById('resizer-height').value;
+            const a = document.createElement('a');
+            a.href = resizerState.currentBlobUrl;
+            a.download = `resized-${w}x${h}.${ext}`;
+            a.click();
+            showToast(`Downloaded resized-${w}x${h}.${ext}!`);
+        }
+
+        // Generate synthetic sample photo on canvas so user can test immediately
+        function generateSamplePhoto() {
+            const c = document.createElement('canvas');
+            c.width = 1600;
+            c.height = 1000;
+            const ctx = c.getContext('2d');
+
+            const grad = ctx.createLinearGradient(0, 0, 1600, 1000);
+            grad.addColorStop(0, '#4f46e5');
+            grad.addColorStop(0.5, '#ec4899');
+            grad.addColorStop(1, '#f59e0b');
+            ctx.fillStyle = grad;
+            ctx.fillRect(0, 0, 1600, 1000);
+
+            // Decorative circles
+            ctx.fillStyle = 'rgba(255,255,255,0.14)';
+            ctx.beginPath(); ctx.arc(1300, 250, 260, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.arc(300, 800, 320, 0, Math.PI * 2); ctx.fill();
+
+            ctx.fillStyle = '#ffffff';
+            ctx.font = 'bold 68px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('Shubham Computer Tools — Sample Photo', 800, 460);
+            ctx.font = '500 36px Inter, sans-serif';
+            ctx.fillText('Original Resolution: 1600 × 1000 px • Test Resize & Compression', 800, 540);
+
+            c.toBlob((blob) => {
+                const file = new File([blob], 'shubham-tools-sample-photo.jpg', { type: 'image/jpeg' });
+                handleResizerFile(file);
+            }, 'image/jpeg', 0.96);
+        }
+
+        /* ==================== TOOL 2: IMAGE TO PDF CONVERTER LOGIC ==================== */
+        function handleImg2PdfFiles(fileList) {
+            const files = Array.from(fileList).filter(f => f.type.startsWith('image/'));
+            if (!files.length) {
+                showToast('Please choose valid image files.', 'error');
+                return;
+            }
+            files.forEach(file => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        img2PdfState.items.push({
+                            id: 'img_' + Math.random().toString(36).slice(2, 9),
+                            name: file.name,
+                            dataUrl: e.target.result,
+                            width: img.naturalWidth,
+                            height: img.naturalHeight,
+                            size: file.size
+                        });
+                        renderImg2PdfQueue();
+                    };
+                    img.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+            });
+            showToast(`Added ${files.length} image(s) to PDF queue.`);
+        }
+
+        function renderImg2PdfQueue() {
+            const grid = document.getElementById('img2pdf-grid');
+            const empty = document.getElementById('img2pdf-empty');
+            document.getElementById('img2pdf-count-badge').textContent = img2PdfState.items.length;
+
+            if (img2PdfState.items.length === 0) {
+                empty.classList.remove('hidden');
+                grid.innerHTML = '';
+                return;
+            }
+            empty.classList.add('hidden');
+            grid.innerHTML = img2PdfState.items.map((item, idx) => `
+                <div class="group relative rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 p-2.5 flex flex-col">
+                    <div class="relative h-32 rounded-lg overflow-hidden bg-slate-900/20 flex items-center justify-center mb-2">
+                        <img src="${item.dataUrl}" alt="${item.name}" class="max-h-full max-w-full object-contain">
+                        <span class="absolute top-1.5 left-1.5 px-2 py-0.5 rounded-md text-[10px] font-bold bg-black/70 text-white">Page ${idx + 1}</span>
+                    </div>
+                    <p class="text-xs font-semibold truncate">${item.name}</p>
+                    <p class="text-[10px] text-slate-400">${item.width}×${item.height} • ${formatBytes(item.size)}</p>
+                    <div class="mt-2 pt-2 border-t border-slate-200/70 dark:border-slate-700/70 flex items-center justify-between">
+                        <div class="flex gap-1">
+                            <button onclick="moveImg2PdfItem(${idx}, -1)" ${idx === 0 ? 'disabled' : ''} class="p-1 rounded bg-slate-200 dark:bg-slate-700 disabled:opacity-30 hover:bg-amber-500 hover:text-white transition" title="Move Left">
+                                <i data-lucide="chevron-left" class="w-3.5 h-3.5"></i>
+                            </button>
+                            <button onclick="moveImg2PdfItem(${idx}, 1)" ${idx === img2PdfState.items.length - 1 ? 'disabled' : ''} class="p-1 rounded bg-slate-200 dark:bg-slate-700 disabled:opacity-30 hover:bg-amber-500 hover:text-white transition" title="Move Right">
+                                <i data-lucide="chevron-right" class="w-3.5 h-3.5"></i>
+                            </button>
+                        </div>
+                        <button onclick="removeImg2PdfItem(${idx})" class="p-1 rounded text-rose-500 hover:bg-rose-500/10 transition" title="Remove">
+                            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function moveImg2PdfItem(index, dir) {
+            const target = index + dir;
+            if (target < 0 || target >= img2PdfState.items.length) return;
+            const temp = img2PdfState.items[index];
+            img2PdfState.items[index] = img2PdfState.items[target];
+            img2PdfState.items[target] = temp;
+            renderImg2PdfQueue();
+        }
+
+        function removeImg2PdfItem(index) {
+            img2PdfState.items.splice(index, 1);
+            renderImg2PdfQueue();
+        }
+
+        function clearImg2PdfQueue() {
+            img2PdfState.items = [];
+            renderImg2PdfQueue();
+        }
+
+        function setImg2PdfOrientation(orient) {
+            img2PdfState.orientation = orient;
+            document.querySelectorAll('.orient-btn').forEach(b => {
+                b.className = 'orient-btn py-2 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700';
+            });
+            document.getElementById(`orient-${orient}`).className = 'orient-btn py-2 rounded-xl text-xs font-semibold border border-amber-500 bg-amber-500/10 text-amber-500';
+        }
+
+        function setImg2PdfMargin(marginPts) {
+            img2PdfState.margin = marginPts;
+            document.querySelectorAll('.margin-btn').forEach(b => {
+                b.className = 'margin-btn py-2 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700';
+            });
+            document.getElementById(`margin-${marginPts}`).className = 'margin-btn py-2 rounded-xl text-xs font-semibold border border-amber-500 bg-amber-500/10 text-amber-500';
+        }
+
+        // Convert any image DataURL to clean JPEG Uint8Array via canvas so WEBP/PNG/JPG all embed cleanly in pdf-lib
+        async function imageDataUrlToJpegBytes(dataUrl) {
+            return new Promise((resolve) => {
+                const img = new Image();
+                img.onload = () => {
+                    const c = document.createElement('canvas');
+                    c.width = img.naturalWidth;
+                    c.height = img.naturalHeight;
+                    const ctx = c.getContext('2d');
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.fillRect(0, 0, c.width, c.height);
+                    ctx.drawImage(img, 0, 0);
+                    c.toBlob(async (blob) => {
+                        const buf = await blob.arrayBuffer();
+                        resolve(new Uint8Array(buf));
+                    }, 'image/jpeg', 0.92);
+                };
+                img.src = dataUrl;
+            });
+        }
+
+        async function generatePdfFromImages() {
+            if (img2PdfState.items.length === 0) {
+                showToast('Please add at least one image first!', 'error');
+                return;
+            }
+            try {
+                const { PDFDocument } = PDFLib;
+                const pdfDoc = await PDFDocument.create();
+                const pageSizeMode = document.getElementById('img2pdf-pagesize').value;
+                const margin = img2PdfState.margin;
+
+                for (const item of img2PdfState.items) {
+                    const jpgBytes = await imageDataUrlToJpegBytes(item.dataUrl);
+                    const embeddedImg = await pdfDoc.embedJpg(jpgBytes);
+
+                    let pageW, pageH;
+                    if (pageSizeMode === 'FIT') {
+                        pageW = embeddedImg.width + margin * 2;
+                        pageH = embeddedImg.height + margin * 2;
+                    } else {
+                        // A4 = 595.28 x 841.89, LETTER = 612 x 792
+                        let baseW = pageSizeMode === 'A4' ? 595.28 : 612;
+                        let baseH = pageSizeMode === 'A4' ? 841.89 : 792;
+                        const isLandscape = img2PdfState.orientation === 'landscape' ||
+                            (img2PdfState.orientation === 'auto' && embeddedImg.width > embeddedImg.height);
+                        pageW = isLandscape ? baseH : baseW;
+                        pageH = isLandscape ? baseW : baseH;
+                    }
+
+                    const page = pdfDoc.addPage([pageW, pageH]);
+                    const availW = Math.max(20, pageW - margin * 2);
+                    const availH = Math.max(20, pageH - margin * 2);
+                    const scale = Math.min(availW / embeddedImg.width, availH / embeddedImg.height);
+                    const drawW = embeddedImg.width * scale;
+                    const drawH = embeddedImg.height * scale;
+                    const x = (pageW - drawW) / 2;
+                    const y = (pageH - drawH) / 2;
+
+                    page.drawImage(embeddedImg, { x, y, width: drawW, height: drawH });
+                }
+
+                const pdfBytes = await pdfDoc.save();
+                downloadPdfBytes(pdfBytes, document.getElementById('img2pdf-filename').value || 'images.pdf');
+                showToast(`Created ${img2PdfState.items.length}-page PDF successfully!`);
+            } catch (err) {
+                console.error(err);
+                showToast('Error creating PDF: ' + err.message, 'error');
+            }
+        }
+
+        function generateSampleImagesForPdf() {
+            const palettes = [
+                ['#6366f1', '#a855f7', 'Slide 1: Cover Visual'],
+                ['#10b981', '#06b6d4', 'Slide 2: Architecture Diagram'],
+                ['#f59e0b', '#ef4444', 'Slide 3: Summary Metrics']
+            ];
+            palettes.forEach(([c1, c2, title], i) => {
+                const c = document.createElement('canvas');
+                c.width = 1200;
+                c.height = 850;
+                const ctx = c.getContext('2d');
+                const g = ctx.createLinearGradient(0, 0, 1200, 850);
+                g.addColorStop(0, c1);
+                g.addColorStop(1, c2);
+                ctx.fillStyle = g;
+                ctx.fillRect(0, 0, 1200, 850);
+                ctx.fillStyle = '#fff';
+                ctx.font = 'bold 58px Inter, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(title, 600, 420);
+                ctx.font = '32px Inter, sans-serif';
+                ctx.fillText(`Demo Image #${i + 1} • Ready for PDF Conversion`, 600, 490);
+                const dataUrl = c.toDataURL('image/jpeg', 0.9);
+                img2PdfState.items.push({
+                    id: 'demo_' + Math.random().toString(36).slice(2, 8),
+                    name: `demo-slide-${i + 1}.jpg`,
+                    dataUrl,
+                    width: 1200,
+                    height: 850,
+                    size: 98400
+                });
+            });
+            renderImg2PdfQueue();
+            showToast('Added 3 sample slides! Click "Generate & Download PDF" to test.');
+        }
+
+        /* ==================== SHARED PDF HELPER FUNCTIONS ==================== */
+        function downloadPdfBytes(uint8Array, filename) {
+            if (!filename.toLowerCase().endsWith('.pdf')) filename += '.pdf';
+            const blob = new Blob([uint8Array], { type: 'application/pdf' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            a.click();
+            setTimeout(() => URL.revokeObjectURL(url), 5000);
+        }
+
+        // Generate a multi-page sample PDF on the fly using pdf-lib for instant testing
+        async function createSamplePdfBytes(titlePrefix = 'Sample Document', numPages = 5) {
+            const { PDFDocument, StandardFonts, rgb } = PDFLib;
+            const doc = await PDFDocument.create();
+            const fontBold = await doc.embedFont(StandardFonts.HelveticaBold);
+            const fontReg = await doc.embedFont(StandardFonts.Helvetica);
+
+            for (let i = 1; i <= numPages; i++) {
+                const page = doc.addPage([600, 800]);
+                // Header bar
+                page.drawRectangle({ x: 40, y: 690, width: 520, height: 70, color: rgb(0.31, 0.27, 0.9) });
+                page.drawText(`${titlePrefix} — Page ${i} of ${numPages}`, {
+                    x: 65, y: 718, size: 22, font: fontBold, color: rgb(1, 1, 1)
+                });
+                page.drawText(`Generated locally by Shubham Computer Tools for live PDF testing.`, {
+                    x: 60, y: 630, size: 14, font: fontReg, color: rgb(0.2, 0.2, 0.25)
+                });
+                // Giant page indicator box in center so rotation/splitting is super obvious visually
+                page.drawRectangle({ x: 180, y: 300, width: 240, height: 240, color: rgb(0.94, 0.95, 0.98) });
+                page.drawText(`P${i}`, {
+                    x: 245, y: 390, size: 86, font: fontBold, color: rgb(0.31, 0.27, 0.9)
+                });
+            }
+            return await doc.save();
+        }
+
+        // Render PDF pages onto canvases using PDF.js
+        async function renderPdfThumbnails(arrayBuffer, scale = 0.4) {
+            const copyBuffer = arrayBuffer.slice(0);
+            const loadingTask = pdfjsLib.getDocument({ data: copyBuffer });
+            const pdf = await loadingTask.promise;
+            const canvases = [];
+            for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+                const page = await pdf.getPage(pageNum);
+                const viewport = page.getViewport({ scale });
+                const canvas = document.createElement('canvas');
+                canvas.width = viewport.width;
+                canvas.height = viewport.height;
+                const ctx = canvas.getContext('2d');
+                await page.render({ canvasContext: ctx, viewport }).promise;
+                canvases.push(canvas);
+            }
+            return canvases;
+        }
+
+        /* ==================== TOOL 3: MERGE PDF LOGIC ==================== */
+        async function handleMergeFiles(fileList) {
+            const files = Array.from(fileList).filter(f => f.type === 'application/pdf' || f.name.endsWith('.pdf'));
+            if (!files.length) return;
+            for (const f of files) {
+                try {
+                    const buf = await f.arrayBuffer();
+                    const doc = await PDFLib.PDFDocument.load(buf);
+                    mergeState.files.push({
+                        id: 'm_' + Math.random().toString(36).slice(2, 8),
+                        name: f.name,
+                        size: f.size,
+                        arrayBuffer: buf,
+                        pageCount: doc.getPageCount()
+                    });
+                } catch (e) {
+                    showToast(`Could not read ${f.name}`, 'error');
+                }
+            }
+            renderMergeList();
+            showToast(`Added ${files.length} PDF file(s) to merge list.`);
+        }
+
+        function renderMergeList() {
+            const list = document.getElementById('merge-list');
+            const empty = document.getElementById('merge-empty');
+            const totalPages = mergeState.files.reduce((acc, f) => acc + f.pageCount, 0);
+            document.getElementById('merge-summary-badge').textContent = `${mergeState.files.length} files • ${totalPages} pages`;
+
+            if (mergeState.files.length === 0) {
+                empty.classList.remove('hidden');
+                list.innerHTML = '';
+                return;
+            }
+            empty.classList.add('hidden');
+            list.innerHTML = mergeState.files.map((f, idx) => `
+                <div class="flex items-center justify-between p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700">
+                    <div class="flex items-center gap-3 min-w-0">
+                        <span class="w-7 h-7 rounded-lg bg-indigo-500/15 text-indigo-500 font-bold text-xs flex items-center justify-center shrink-0">${idx + 1}</span>
+                        <div class="min-w-0">
+                            <p class="text-xs font-bold truncate">${f.name}</p>
+                            <p class="text-[11px] text-slate-400">${f.pageCount} pages • ${formatBytes(f.size)}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-1.5">
+                        <button onclick="moveMergeItem(${idx}, -1)" ${idx === 0 ? 'disabled' : ''} class="p-1.5 rounded-lg bg-slate-200 dark:bg-slate-700 disabled:opacity-30 hover:bg-indigo-500 hover:text-white transition">
+                            <i data-lucide="arrow-up" class="w-3.5 h-3.5"></i>
+                        </button>
+                        <button onclick="moveMergeItem(${idx}, 1)" ${idx === mergeState.files.length - 1 ? 'disabled' : ''} class="p-1.5 rounded-lg bg-slate-200 dark:bg-slate-700 disabled:opacity-30 hover:bg-indigo-500 hover:text-white transition">
+                            <i data-lucide="arrow-down" class="w-3.5 h-3.5"></i>
+                        </button>
+                        <button onclick="removeMergeItem(${idx})" class="p-1.5 rounded-lg text-rose-500 hover:bg-rose-500/10 transition">
+                            <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+            lucide.createIcons();
+        }
+
+        function moveMergeItem(idx, dir) {
+            const t = idx + dir;
+            if (t < 0 || t >= mergeState.files.length) return;
+            const tmp = mergeState.files[idx];
+            mergeState.files[idx] = mergeState.files[t];
+            mergeState.files[t] = tmp;
+            renderMergeList();
+        }
+
+        function removeMergeItem(idx) {
+            mergeState.files.splice(idx, 1);
+            renderMergeList();
+        }
+
+        function clearMergeList() {
+            mergeState.files = [];
+            renderMergeList();
+        }
+
+        async function executeMergePdfs() {
+            if (mergeState.files.length < 2) {
+                showToast('Add at least 2 PDF files to merge!', 'error');
+                return;
+            }
+            try {
+                const { PDFDocument } = PDFLib;
+                const mergedPdf = await PDFDocument.create();
+                for (const item of mergeState.files) {
+                    const srcDoc = await PDFDocument.load(item.arrayBuffer);
+                    const copiedPages = await mergedPdf.copyPages(srcDoc, srcDoc.getPageIndices());
+                    copiedPages.forEach(p => mergedPdf.addPage(p));
+                }
+                const outBytes = await mergedPdf.save();
+                downloadPdfBytes(outBytes, document.getElementById('merge-filename').value || 'merged.pdf');
+                showToast('Successfully merged and downloaded PDF!');
+            } catch (e) {
+                showToast('Failed to merge PDFs: ' + e.message, 'error');
+            }
+        }
+
+        async function generateSamplePdfsForMerge() {
+            const pdfA = await createSamplePdfBytes('Invoice Report A', 2);
+            const pdfB = await createSamplePdfBytes('Appendix Contract B', 3);
+            mergeState.files.push(
+                { id: 'demo_a', name: 'invoice-report-A.pdf', size: pdfA.byteLength, arrayBuffer: pdfA.buffer, pageCount: 2 },
+                { id: 'demo_b', name: 'appendix-contract-B.pdf', size: pdfB.byteLength, arrayBuffer: pdfB.buffer, pageCount: 3 }
+            );
+            renderMergeList();
+            showToast('Added 2 sample PDFs (5 pages total)! Click Merge to combine.');
+        }
+
+        /* ==================== TOOL 4: SPLIT / EXTRACT PDF LOGIC ==================== */
+        async function handleSplitFile(file) {
+            if (!file) return;
+            const buf = await file.arrayBuffer();
+            await loadSplitBuffer(buf, file.name);
+        }
+
+        async function loadSplitBuffer(arrayBuffer, fileName) {
+            try {
+                const doc = await PDFLib.PDFDocument.load(arrayBuffer);
+                splitState.fileName = fileName;
+                splitState.arrayBuffer = arrayBuffer;
+                splitState.pageCount = doc.getPageCount();
+                splitState.selectedPages = new Set([1]);
+
+                document.getElementById('split-workspace').classList.remove('hidden');
+                const thumbnails = await renderPdfThumbnails(arrayBuffer, 0.35);
+                const grid = document.getElementById('split-pages-grid');
+                grid.innerHTML = '';
+
+                thumbnails.forEach((canvas, idx) => {
+                    const pageNum = idx + 1;
+                    const card = document.createElement('div');
+                    card.id = `split-card-${pageNum}`;
+                    card.onclick = () => toggleSplitPage(pageNum);
+                    card.className = 'cursor-pointer rounded-xl p-2.5 border-2 transition flex flex-col items-center';
+                    canvas.className = 'w-full h-auto rounded shadow-sm mb-2 pointer-events-none';
+                    const label = document.createElement('span');
+                    label.className = 'text-xs font-bold';
+                    label.textContent = `Page ${pageNum}`;
+                    card.appendChild(canvas);
+                    card.appendChild(label);
+                    grid.appendChild(card);
+                });
+
+                updateSplitSelectionUI();
+                showToast(`Loaded ${fileName} (${splitState.pageCount} pages).`);
+            } catch (e) {
+                showToast('Could not load PDF: ' + e.message, 'error');
+            }
+        }
+
+        function toggleSplitPage(pageNum) {
+            if (splitState.selectedPages.has(pageNum)) {
+                splitState.selectedPages.delete(pageNum);
+            } else {
+                splitState.selectedPages.add(pageNum);
+            }
+            updateSplitSelectionUI();
+        }
+
+        function selectAllSplitPages(selectAll) {
+            splitState.selectedPages.clear();
+            if (selectAll) {
+                for (let i = 1; i <= splitState.pageCount; i++) splitState.selectedPages.add(i);
+            }
+            updateSplitSelectionUI();
+        }
+
+        function updateSplitSelectionUI() {
+            for (let i = 1; i <= splitState.pageCount; i++) {
+                const card = document.getElementById(`split-card-${i}`);
+                if (!card) continue;
+                if (splitState.selectedPages.has(i)) {
+                    card.className = 'cursor-pointer rounded-xl p-2.5 border-2 border-emerald-500 bg-emerald-500/10 transition flex flex-col items-center';
+                } else {
+                    card.className = 'cursor-pointer rounded-xl p-2.5 border-2 border-slate-200 dark:border-slate-800 opacity-65 hover:opacity-100 transition flex flex-col items-center';
+                }
+            }
+            const sorted = Array.from(splitState.selectedPages).sort((a, b) => a - b);
+            document.getElementById('split-range-input').value = sorted.join(', ');
+            document.getElementById('split-selected-count').textContent = `${sorted.length} of ${splitState.pageCount} pages`;
+        }
+
+        function syncSplitRangeFromInput() {
+            const raw = document.getElementById('split-range-input').value;
+            const nextSet = new Set();
+            raw.split(',').forEach(part => {
+                part = part.trim();
+                if (!part) return;
+                if (part.includes('-')) {
+                    const [start, end] = part.split('-').map(n => parseInt(n.trim()));
+                    if (!isNaN(start) && !isNaN(end)) {
+                        for (let p = Math.min(start, end); p <= Math.max(start, end); p++) {
+                            if (p >= 1 && p <= splitState.pageCount) nextSet.add(p);
+                        }
+                    }
+                } else {
+                    const p = parseInt(part);
+                    if (!isNaN(p) && p >= 1 && p <= splitState.pageCount) nextSet.add(p);
+                }
+            });
+            splitState.selectedPages = nextSet;
+            for (let i = 1; i <= splitState.pageCount; i++) {
+                const card = document.getElementById(`split-card-${i}`);
+                if (card) {
+                    card.className = splitState.selectedPages.has(i)
+                        ? 'cursor-pointer rounded-xl p-2.5 border-2 border-emerald-500 bg-emerald-500/10 transition flex flex-col items-center'
+                        : 'cursor-pointer rounded-xl p-2.5 border-2 border-slate-200 dark:border-slate-800 opacity-65 transition flex flex-col items-center';
+                }
+            }
+            document.getElementById('split-selected-count').textContent = `${nextSet.size} of ${splitState.pageCount} pages`;
+        }
+
+        async function executeExtractPdfPages() {
+            const pages = Array.from(splitState.selectedPages).sort((a, b) => a - b);
+            if (!pages.length) {
+                showToast('Select at least one page to extract!', 'error');
+                return;
+            }
+            const { PDFDocument } = PDFLib;
+            const srcDoc = await PDFDocument.load(splitState.arrayBuffer);
+            const newDoc = await PDFDocument.create();
+            const indices = pages.map(p => p - 1);
+            const copied = await newDoc.copyPages(srcDoc, indices);
+            copied.forEach(p => newDoc.addPage(p));
+            const outBytes = await newDoc.save();
+            downloadPdfBytes(outBytes, `extracted-pages-${pages.join('-')}.pdf`);
+            showToast(`Extracted ${pages.length} page(s) into a new PDF!`);
+        }
+
+        /* ==================== TOOL 5: ROTATE PDF LOGIC ==================== */
+        async function handleRotateFile(file) {
+            if (!file) return;
+            const buf = await file.arrayBuffer();
+            await loadRotateBuffer(buf, file.name);
+        }
+
+        async function loadRotateBuffer(arrayBuffer, fileName) {
+            const doc = await PDFLib.PDFDocument.load(arrayBuffer);
+            rotateState.fileName = fileName;
+            rotateState.arrayBuffer = arrayBuffer;
+            rotateState.pageCount = doc.getPageCount();
+            rotateState.rotations = new Array(rotateState.pageCount).fill(0);
+
+            document.getElementById('rotate-workspace').classList.remove('hidden');
+            const thumbnails = await renderPdfThumbnails(arrayBuffer, 0.35);
+            const grid = document.getElementById('rotate-pages-grid');
+            grid.innerHTML = '';
+
+            thumbnails.forEach((canvas, idx) => {
+                const wrapper = document.createElement('div');
+                wrapper.className = 'rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 p-3 flex flex-col items-center';
+                canvas.id = `rot-canvas-${idx}`;
+                canvas.className = 'w-full h-auto rounded shadow transition-transform duration-300 my-2';
+
+                const controls = document.createElement('div');
+                controls.className = 'w-full flex items-center justify-between pt-2 border-t border-slate-200 dark:border-slate-700 mt-2';
+                controls.innerHTML = `
+                    <span class="text-xs font-bold">Page ${idx + 1}</span>
+                    <div class="flex items-center gap-1">
+                        <span id="rot-badge-${idx}" class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-cyan-500/15 text-cyan-500">0°</span>
+                        <button onclick="rotateSinglePage(${idx}, 90)" class="p-1 rounded bg-slate-200 dark:bg-slate-700 hover:bg-cyan-500 hover:text-white transition" title="Rotate 90°">
+                            <i data-lucide="rotate-cw" class="w-3.5 h-3.5"></i>
+                        </button>
+                    </div>
+                `;
+                wrapper.appendChild(canvas);
+                wrapper.appendChild(controls);
+                grid.appendChild(wrapper);
+            });
+            lucide.createIcons();
+            showToast(`Loaded ${fileName} for rotation.`);
+        }
+
+        function rotateSinglePage(idx, delta) {
+            rotateState.rotations[idx] = (rotateState.rotations[idx] + delta + 360) % 360;
+            updateRotationVisuals();
+        }
+
+        function rotateAllPdfPages(delta) {
+            rotateState.rotations = rotateState.rotations.map(r => (r + delta + 360) % 360);
+            updateRotationVisuals();
+        }
+
+        function resetAllRotations() {
+            rotateState.rotations.fill(0);
+            updateRotationVisuals();
+        }
+
+        function updateRotationVisuals() {
+            rotateState.rotations.forEach((deg, idx) => {
+                const c = document.getElementById(`rot-canvas-${idx}`);
+                const b = document.getElementById(`rot-badge-${idx}`);
+                if (c) c.style.transform = `rotate(${deg}deg)`;
+                if (b) b.textContent = `${deg}°`;
+            });
+        }
+
+        async function saveRotatedPdf() {
+            const { PDFDocument, degrees } = PDFLib;
+            const doc = await PDFDocument.load(rotateState.arrayBuffer);
+            const pages = doc.getPages();
+            pages.forEach((page, idx) => {
+                const current = page.getRotation().angle;
+                page.setRotation(degrees((current + rotateState.rotations[idx]) % 360));
+            });
+            const outBytes = await doc.save();
+            downloadPdfBytes(outBytes, `rotated-${rotateState.fileName || 'document.pdf'}`);
+            showToast('Downloaded rotated PDF!');
+        }
+
+        /* ==================== TOOL 6: WATERMARK & PAGE NUMBERS LOGIC ==================== */
+        async function handleWatermarkFile(file) {
+            if (!file) return;
+            const buf = await file.arrayBuffer();
+            await loadWatermarkBuffer(buf, file.name);
+        }
+
+        async function loadWatermarkBuffer(arrayBuffer, fileName) {
+            const doc = await PDFLib.PDFDocument.load(arrayBuffer);
+            watermarkState.fileName = fileName;
+            watermarkState.arrayBuffer = arrayBuffer;
+            watermarkState.pageCount = doc.getPageCount();
+
+            document.getElementById('watermark-workspace').classList.remove('hidden');
+            document.getElementById('wm-file-badge').textContent = `${fileName} (${watermarkState.pageCount} pages)`;
+
+            const thumbs = await renderPdfThumbnails(arrayBuffer, 0.85);
+            watermarkState.firstPageImageCanvas = thumbs[0];
+            drawWatermarkLivePreview();
+            showToast(`Loaded ${fileName} for watermarking.`);
+        }
+
+        function drawWatermarkLivePreview() {
+            if (!watermarkState.firstPageImageCanvas) return;
+            const srcCanvas = watermarkState.firstPageImageCanvas;
+            const dstCanvas = document.getElementById('wm-preview-canvas');
+            dstCanvas.width = srcCanvas.width;
+            dstCanvas.height = srcCanvas.height;
+            const ctx = dstCanvas.getContext('2d');
+            ctx.drawImage(srcCanvas, 0, 0);
+
+            const text = document.getElementById('wm-text').value;
+            const size = parseInt(document.getElementById('wm-size').value) || 38;
+            const opacity = (parseInt(document.getElementById('wm-opacity').value) || 25) / 100;
+            const colorKey = document.getElementById('wm-color').value;
+            const style = document.getElementById('wm-style').value;
+            const pageNums = document.getElementById('wm-pagenums').checked;
+
+            document.getElementById('wm-opacity-val').textContent = `${Math.round(opacity * 100)}%`;
+
+            const colorMap = {
+                red: `rgba(220, 38, 38, ${opacity})`,
+                gray: `rgba(71, 85, 105, ${opacity})`,
+                blue: `rgba(37, 99, 235, ${opacity})`
+            };
+
+            if (text.trim()) {
+                ctx.save();
+                ctx.fillStyle = colorMap[colorKey] || colorMap.red;
+                ctx.font = `bold ${size}px Helvetica, Arial, sans-serif`;
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+
+                if (style === 'diagonal') {
+                    ctx.translate(dstCanvas.width / 2, dstCanvas.height / 2);
+                    ctx.rotate(-Math.PI / 4);
+                    ctx.fillText(text, 0, 0);
+                } else if (style === 'horizontal') {
+                    ctx.fillText(text, dstCanvas.width / 2, dstCanvas.height / 2);
+                } else {
+                    ctx.fillText(text, dstCanvas.width / 2, 45);
+                }
+                ctx.restore();
+            }
+
+            if (pageNums) {
+                ctx.save();
+                ctx.fillStyle = 'rgba(30, 41, 59, 0.85)';
+                ctx.font = 'bold 13px Helvetica, Arial, sans-serif';
+                ctx.textAlign = 'center';
+                ctx.fillText(`Page 1 of ${watermarkState.pageCount}`, dstCanvas.width / 2, dstCanvas.height - 20);
+                ctx.restore();
+            }
+        }
+
+        async function applyWatermarkAndDownload() {
+            if (!watermarkState.arrayBuffer) return;
+            const { PDFDocument, StandardFonts, rgb, degrees } = PDFLib;
+            const doc = await PDFDocument.load(watermarkState.arrayBuffer);
+            const fontBold = await doc.embedFont(StandardFonts.HelveticaBold);
+            const pages = doc.getPages();
+
+            const text = document.getElementById('wm-text').value.trim();
+            const size = parseInt(document.getElementById('wm-size').value) || 38;
+            const opacity = (parseInt(document.getElementById('wm-opacity').value) || 25) / 100;
+            const colorKey = document.getElementById('wm-color').value;
+            const style = document.getElementById('wm-style').value;
+            const addPageNums = document.getElementById('wm-pagenums').checked;
+
+            const rgbMap = {
+                red: rgb(0.86, 0.15, 0.15),
+                gray: rgb(0.28, 0.33, 0.41),
+                blue: rgb(0.15, 0.39, 0.92)
+            };
+
+            pages.forEach((page, i) => {
+                const { width, height } = page.getSize();
+                if (text) {
+                    const textWidth = fontBold.widthOfTextAtSize(text, size);
+                    if (style === 'diagonal') {
+                        page.drawText(text, {
+                            x: width / 2 - (textWidth * 0.35),
+                            y: height / 2 - (textWidth * 0.35),
+                            size,
+                            font: fontBold,
+                            color: rgbMap[colorKey],
+                            opacity,
+                            rotate: degrees(45)
+                        });
+                    } else if (style === 'horizontal') {
+                        page.drawText(text, {
+                            x: Math.max(20, (width - textWidth) / 2),
+                            y: height / 2,
+                            size,
+                            font: fontBold,
+                            color: rgbMap[colorKey],
+                            opacity
+                        });
+                    } else {
+                        page.drawText(text, {
+                            x: Math.max(20, (width - textWidth) / 2),
+                            y: height - 50,
+                            size,
+                            font: fontBold,
+                            color: rgbMap[colorKey],
+                            opacity
+                        });
+                    }
+                }
+
+                if (addPageNums) {
+                    const footerStr = `Page ${i + 1} of ${pages.length}`;
+                    const fw = fontBold.widthOfTextAtSize(footerStr, 11);
+                    page.drawText(footerStr, {
+                        x: (width - fw) / 2,
+                        y: 22,
+                        size: 11,
+                        font: fontBold,
+                        color: rgb(0.2, 0.25, 0.32),
+                        opacity: 0.85
+                    });
+                }
+            });
+
+            const outBytes = await doc.save();
+            downloadPdfBytes(outBytes, `stamped-${watermarkState.fileName || 'document.pdf'}`);
+            showToast('Watermark & page numbers applied and downloaded!');
+        }
+
+        /* ==================== TOOL 7: PDF TO IMAGES LOGIC ==================== */
+        async function handlePdf2ImgFile(file) {
+            if (!file) return;
+            const buf = await file.arrayBuffer();
+            await loadPdf2ImgBuffer(buf, file.name);
+        }
+
+        async function loadPdf2ImgBuffer(arrayBuffer, fileName) {
+            pdf2ImgState.fileName = fileName.replace(/\.pdf$/i, '');
+            pdf2ImgState.dataUrls = [];
+            document.getElementById('pdf2img-workspace').classList.remove('hidden');
+            const grid = document.getElementById('pdf2img-grid');
+            grid.innerHTML = '<p class="text-xs text-slate-400 col-span-full py-6 text-center">Rendering high-resolution pages...</p>';
+
+            const canvases = await renderPdfThumbnails(arrayBuffer, 1.5);
+            grid.innerHTML = '';
+
+            canvases.forEach((canvas, idx) => {
+                const dataUrl = canvas.toDataURL('image/jpeg', 0.94);
+                pdf2ImgState.dataUrls.push(dataUrl);
+
+                const card = document.createElement('div');
+                card.className = 'rounded-xl border border-slate-200 dark:border-slate-800 p-3 bg-slate-50 dark:bg-slate-800/40 flex flex-col justify-between';
+                card.innerHTML = `
+                    <img src="${dataUrl}" class="w-full h-auto rounded shadow mb-3" alt="Page ${idx + 1}">
+                    <div class="flex items-center justify-between">
+                        <span class="text-xs font-bold">Page ${idx + 1} (${canvas.width}×${canvas.height}px)</span>
+                        <a href="${dataUrl}" download="${pdf2ImgState.fileName}-page-${idx + 1}.jpg" class="px-3 py-1.5 rounded-lg bg-rose-500 text-white text-xs font-semibold hover:bg-rose-600 transition">Save JPG</a>
+                    </div>
+                `;
+                grid.appendChild(card);
+            });
+            showToast(`Rendered ${canvases.length} high-res image(s) from PDF.`);
+        }
+
+        function downloadAllPdfImages() {
+            pdf2ImgState.dataUrls.forEach((url, idx) => {
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `${pdf2ImgState.fileName || 'pdf'}-page-${idx + 1}.jpg`;
+                a.click();
+            });
+            showToast(`Downloaded ${pdf2ImgState.dataUrls.length} JPG images!`);
+        }
+
+        /* ==================== DEMO GENERATOR DISPATCHER ==================== */
+        async function loadSamplePdfForTool(tool) {
+            const pdfBytes = await createSamplePdfBytes('Shubham Computer Tools PDF', 5);
+            if (tool === 'split') await loadSplitBuffer(pdfBytes.buffer, 'shubham-handbook-5pages.pdf');
+            if (tool === 'rotate') await loadRotateBuffer(pdfBytes.buffer, 'shubham-rotatable.pdf');
+            if (tool === 'watermark') await loadWatermarkBuffer(pdfBytes.buffer, 'shubham-document.pdf');
+            if (tool === 'pdf2img') await loadPdf2ImgBuffer(pdfBytes.buffer, 'shubham-slides.pdf');
+        }
+
+        async function generateSampleAssets() {
+            if (currentTool === 'dashboard') {
+                switchTool('resizer');
+                generateSamplePhoto();
+            } else if (currentTool === 'resizer') {
+                generateSamplePhoto();
+            } else if (currentTool === 'img2pdf') {
+                generateSampleImagesForPdf();
+            } else if (currentTool === 'merge') {
+                await generateSamplePdfsForMerge();
+            } else {
+                await loadSamplePdfForTool(currentTool);
+            }
+        }
+
+        // Setup Drag & Drop Listeners on all Dropzones
+        function initDragAndDropZones() {
+            const zones = [
+                { id: 'resizer-dropzone', handler: (files) => handleResizerFile(files[0]) },
+                { id: 'img2pdf-dropzone', handler: (files) => handleImg2PdfFiles(files) },
+                { id: 'merge-dropzone', handler: (files) => handleMergeFiles(files) },
+                { id: 'split-dropzone', handler: (files) => handleSplitFile(files[0]) },
+                { id: 'rotate-dropzone', handler: (files) => handleRotateFile(files[0]) },
+                { id: 'watermark-dropzone', handler: (files) => handleWatermarkFile(files[0]) },
+                { id: 'pdf2img-dropzone', handler: (files) => handlePdf2ImgFile(files[0]) }
+            ];
+
+            zones.forEach(({ id, handler }) => {
+                const el = document.getElementById(id);
+                if (!el) return;
+                ['dragenter', 'dragover'].forEach(evt => {
+                    el.addEventListener(evt, (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        el.classList.add('drop-zone-active');
+                    });
+                });
+                ['dragleave', 'drop'].forEach(evt => {
+                    el.addEventListener(evt, (e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        el.classList.remove('drop-zone-active');
+                    });
+                });
+                el.addEventListener('drop', (e) => {
+                    if (e.dataTransfer && e.dataTransfer.files.length) {
+                        handler(e.dataTransfer.files);
+                    }
+                });
+            });
+        }
+
+        // Initialize App on Load
+        window.addEventListener('DOMContentLoaded', () => {
+            switchTool('dashboard');
+            initDragAndDropZones();
+            lucide.createIcons();
+        });
+    </script>
+</body>
+</html>
