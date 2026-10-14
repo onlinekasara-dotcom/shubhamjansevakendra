@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Shubham Computer Tools — All-in-One Photo & PDF Utility Suite</title>
+    <title>Shubham Computer Tools — All-in-One Cyber Cafe, Photo Crop & PDF Suite</title>
     
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
@@ -21,6 +21,10 @@
     
     <!-- PDF.js for rendering real PDF page previews onto HTML5 Canvas -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+
+    <!-- Cropper.js for Interactive Precision Image Cropping & Cutting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
 
     <script>
         tailwind.config = {
@@ -86,6 +90,11 @@
                 linear-gradient(45deg, transparent 75%, #e2e8f0 75%), 
                 linear-gradient(-45deg, transparent 75%, #e2e8f0 75%);
         }
+        /* Circle Crop Overlay Preview when Circle Mode is active */
+        .circle-crop-mode .cropper-view-box,
+        .circle-crop-mode .cropper-face {
+            border-radius: 50%;
+        }
     </style>
 </head>
 <body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-200 selection:bg-indigo-500 selection:text-white">
@@ -100,16 +109,16 @@
                 <div>
                     <div class="flex items-center gap-2">
                         <span class="font-bold text-lg tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-indigo-600 to-purple-600 dark:from-indigo-400 dark:to-purple-400">Shubham Computer Tools</span>
-                        <span class="text-[11px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">Pro Suite</span>
+                        <span class="text-[11px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full bg-indigo-500/10 text-indigo-600 dark:text-indigo-400 border border-indigo-500/20">Jan Seva Pro</span>
                     </div>
-                    <p class="text-xs text-slate-500 dark:text-slate-400 hidden sm:block">All-in-One Photo & PDF Utility Suite • Fast, Free & Private</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 hidden sm:block">Crop Cutter, Passport Sheet, ID Combiner, Photo Resizer & PDF Suite</p>
                 </div>
             </div>
 
             <div class="flex items-center gap-2 sm:gap-3">
                 <div class="hidden md:flex items-center gap-1.5 text-xs font-medium text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 px-3 py-1.5 rounded-full">
                     <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                    100% Client-Side • Zero Server Uploads
+                    100% Client-Side • Instant & Private
                 </div>
 
                 <button onclick="generateSampleAssets()" class="text-xs font-medium px-3 py-2 rounded-xl bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-300 hover:bg-indigo-100 dark:hover:bg-indigo-900/70 border border-indigo-200 dark:border-indigo-800/70 flex items-center gap-1.5 transition" title="Load sample image or PDF into the current tool">
@@ -130,22 +139,46 @@
         
         <!-- Navigation Sidebar / Mobile Horizontal Pill Bar -->
         <aside class="lg:w-64 shrink-0">
-            <nav class="flex lg:flex-col gap-1.5 overflow-x-auto pb-2 lg:pb-0 lg:sticky lg:top-24">
+            <nav class="flex lg:flex-col gap-1 overflow-x-auto pb-2 lg:pb-0 lg:sticky lg:top-20">
                 <button onclick="switchTool('dashboard')" id="nav-dashboard" class="tool-nav-btn flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all">
                     <i data-lucide="layout-grid" class="w-4 h-4 shrink-0"></i>
-                    <span>All Tools Hub</span>
+                    <span>All Tools Hub (11)</span>
+                </button>
+
+                <div class="hidden lg:block pt-3 pb-1 px-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
+                    Crop, Cutter & Cyber Cafe
+                </div>
+
+                <button onclick="switchTool('cropper')" id="nav-cropper" class="tool-nav-btn flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all">
+                    <i data-lucide="crop" class="w-4 h-4 shrink-0 text-orange-500"></i>
+                    <span>Photo Crop & Shape Cutter</span>
+                </button>
+
+                <button onclick="switchTool('passport')" id="nav-passport" class="tool-nav-btn flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all">
+                    <i data-lucide="grid" class="w-4 h-4 shrink-0 text-blue-500"></i>
+                    <span>Passport Photo Sheet Maker</span>
+                </button>
+
+                <button onclick="switchTool('sigclean')" id="nav-sigclean" class="tool-nav-btn flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all">
+                    <i data-lucide="pen-tool" class="w-4 h-4 shrink-0 text-teal-500"></i>
+                    <span>Signature & Doc Cleaner</span>
+                </button>
+
+                <button onclick="switchTool('idcard')" id="nav-idcard" class="tool-nav-btn flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all">
+                    <i data-lucide="credit-card" class="w-4 h-4 shrink-0 text-lime-500"></i>
+                    <span>ID Card Front+Back Print</span>
                 </button>
 
                 <div class="hidden lg:block pt-3 pb-1 px-3 text-[11px] font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
                     Image Utilities
                 </div>
 
-                <button onclick="switchTool('resizer')" id="nav-resizer" class="tool-nav-btn flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all">
+                <button onclick="switchTool('resizer')" id="nav-resizer" class="tool-nav-btn flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all">
                     <i data-lucide="scaling" class="w-4 h-4 shrink-0 text-pink-500"></i>
                     <span>Photo Resizer & Compress</span>
                 </button>
 
-                <button onclick="switchTool('img2pdf')" id="nav-img2pdf" class="tool-nav-btn flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all">
+                <button onclick="switchTool('img2pdf')" id="nav-img2pdf" class="tool-nav-btn flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all">
                     <i data-lucide="images" class="w-4 h-4 shrink-0 text-amber-500"></i>
                     <span>Image to PDF Converter</span>
                 </button>
@@ -154,27 +187,27 @@
                     PDF Power Tools
                 </div>
 
-                <button onclick="switchTool('merge')" id="nav-merge" class="tool-nav-btn flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all">
+                <button onclick="switchTool('merge')" id="nav-merge" class="tool-nav-btn flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all">
                     <i data-lucide="combine" class="w-4 h-4 shrink-0 text-indigo-500"></i>
                     <span>Merge PDFs</span>
                 </button>
 
-                <button onclick="switchTool('split')" id="nav-split" class="tool-nav-btn flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all">
+                <button onclick="switchTool('split')" id="nav-split" class="tool-nav-btn flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all">
                     <i data-lucide="scissors" class="w-4 h-4 shrink-0 text-emerald-500"></i>
                     <span>Split & Extract PDF</span>
                 </button>
 
-                <button onclick="switchTool('rotate')" id="nav-rotate" class="tool-nav-btn flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all">
+                <button onclick="switchTool('rotate')" id="nav-rotate" class="tool-nav-btn flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all">
                     <i data-lucide="rotate-cw" class="w-4 h-4 shrink-0 text-cyan-500"></i>
                     <span>Rotate PDF Pages</span>
                 </button>
 
-                <button onclick="switchTool('watermark')" id="nav-watermark" class="tool-nav-btn flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all">
+                <button onclick="switchTool('watermark')" id="nav-watermark" class="tool-nav-btn flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all">
                     <i data-lucide="stamp" class="w-4 h-4 shrink-0 text-purple-500"></i>
                     <span>Watermark & Page #</span>
                 </button>
 
-                <button onclick="switchTool('pdf2img')" id="nav-pdf2img" class="tool-nav-btn flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all">
+                <button onclick="switchTool('pdf2img')" id="nav-pdf2img" class="tool-nav-btn flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all">
                     <i data-lucide="file-image" class="w-4 h-4 shrink-0 text-rose-500"></i>
                     <span>PDF to JPG / PNG</span>
                 </button>
@@ -187,131 +220,554 @@
             <!-- ==================== VIEW 0: ALL TOOLS DASHBOARD ==================== -->
             <section id="view-dashboard" class="tool-view space-y-6">
                 <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 p-6 sm:p-8 text-white shadow-xl">
-                    <div class="relative z-10 max-w-2xl space-y-3">
+                    <div class="relative z-10 max-w-3xl space-y-3">
                         <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/15 backdrop-blur-md text-xs font-semibold">
                             <i data-lucide="zap" class="w-3.5 h-3.5"></i>
-                            <span>Shubham Computer Tools • 100% Browser Powered</span>
+                            <span>Shubham Computer Tools • Complete Cyber Cafe & Digital Utility Hub</span>
                         </div>
                         <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">
                             Welcome to Shubham Computer Tools
                         </h1>
                         <p class="text-sm sm:text-base text-indigo-100 leading-relaxed">
-                            Your complete digital cyber & office utility hub: resize and compress photos to exact pixel or KB targets, convert multiple images into polished PDFs, or merge, split, rotate, watermark, and extract pages from any PDF.
+                            Now equipped with 11 modern tools: Interactive Photo Crop & Circle/Shape Cutter, Passport Photo Sheet Maker (with Name & Date on Photo), Signature Whitener, ID Card Front+Back Combiner, Photo Resizer, and Full PDF Suite!
                         </p>
-                        <div class="pt-2 flex flex-wrap gap-3">
-                            <button onclick="switchTool('resizer')" class="px-4 py-2.5 rounded-xl bg-white text-indigo-700 font-semibold text-sm hover:bg-indigo-50 transition flex items-center gap-2 shadow">
-                                <i data-lucide="scaling" class="w-4 h-4"></i>
-                                Open Photo Resizer
+                        <div class="pt-2 flex flex-wrap gap-2.5">
+                            <button onclick="switchTool('cropper')" class="px-4 py-2.5 rounded-xl bg-white text-indigo-700 font-semibold text-xs sm:text-sm hover:bg-indigo-50 transition flex items-center gap-2 shadow">
+                                <i data-lucide="crop" class="w-4 h-4 text-orange-500"></i>
+                                Photo Crop & Cutter
                             </button>
-                            <button onclick="switchTool('img2pdf')" class="px-4 py-2.5 rounded-xl bg-black/25 hover:bg-black/35 text-white font-semibold text-sm border border-white/20 transition flex items-center gap-2">
-                                <i data-lucide="images" class="w-4 h-4"></i>
-                                Image to PDF
+                            <button onclick="switchTool('passport')" class="px-4 py-2.5 rounded-xl bg-black/25 hover:bg-black/35 text-white font-semibold text-xs sm:text-sm border border-white/20 transition flex items-center gap-2">
+                                <i data-lucide="grid" class="w-4 h-4"></i>
+                                Passport Photo Sheet
+                            </button>
+                            <button onclick="switchTool('sigclean')" class="px-4 py-2.5 rounded-xl bg-black/25 hover:bg-black/35 text-white font-semibold text-xs sm:text-sm border border-white/20 transition flex items-center gap-2">
+                                <i data-lucide="pen-tool" class="w-4 h-4"></i>
+                                Signature Cleaner
+                            </button>
+                            <button onclick="switchTool('resizer')" class="px-4 py-2.5 rounded-xl bg-black/25 hover:bg-black/35 text-white font-semibold text-xs sm:text-sm border border-white/20 transition flex items-center gap-2">
+                                <i data-lucide="scaling" class="w-4 h-4"></i>
+                                Photo Resizer
                             </button>
                         </div>
                     </div>
                 </div>
 
-                <!-- Grid of Tool Cards -->
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    <!-- Card 1 -->
-                    <div onclick="switchTool('resizer')" class="group cursor-pointer rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 hover:border-pink-500/50 dark:hover:border-pink-500/50 hover:shadow-lg hover:shadow-pink-500/5 transition-all flex flex-col justify-between">
-                        <div>
-                            <div class="w-11 h-11 rounded-xl bg-pink-500/10 text-pink-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                                <i data-lucide="scaling" class="w-6 h-6"></i>
+                <!-- Highlight Section: New Crop, Cutter & Cyber Cafe Tools -->
+                <div>
+                    <div class="flex items-center gap-2 mb-3">
+                        <span class="px-2.5 py-0.5 rounded-full text-[11px] font-bold bg-orange-500/15 text-orange-500 uppercase tracking-wider">New</span>
+                        <h2 class="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400">Crop, Cutter & Jan Seva Kendra Tools</h2>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        <!-- New Card 1: Crop Cutter -->
+                        <div onclick="switchTool('cropper')" class="group cursor-pointer rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 hover:border-orange-500/60 hover:shadow-lg transition-all flex flex-col justify-between">
+                            <div>
+                                <div class="w-11 h-11 rounded-xl bg-orange-500/10 text-orange-500 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                                    <i data-lucide="crop" class="w-6 h-6"></i>
+                                </div>
+                                <h3 class="font-bold text-base mb-1">Photo Crop & Shape Cutter</h3>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                                    Freehand drag-box crop, Circle DP cutter, rounded corners, flip/rotate, and 1-click presets for SSC, UPSC, PAN, & Signatures.
+                                </p>
                             </div>
-                            <h3 class="font-bold text-base mb-1">Photo Resizer & Compressor</h3>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                                Change image dimensions (px or %), lock aspect ratio, adjust quality slider, convert between JPG/PNG/WEBP, and compare live file sizes.
-                            </p>
+                            <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-semibold text-orange-500">
+                                <span>Open Cropper</span>
+                                <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                            </div>
                         </div>
-                        <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-semibold text-pink-500">
-                            <span>Launch Tool</span>
-                            <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+
+                        <!-- New Card 2: Passport Photo Sheet Maker -->
+                        <div onclick="switchTool('passport')" class="group cursor-pointer rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 hover:border-blue-500/60 hover:shadow-lg transition-all flex flex-col justify-between">
+                            <div>
+                                <div class="w-11 h-11 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                                    <i data-lucide="grid" class="w-6 h-6"></i>
+                                </div>
+                                <h3 class="font-bold text-base mb-1">Passport Photo Sheet Maker</h3>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                                    Create printable 6, 8, 12, or 36 passport photos on 4×6 or A4 sheet with optional Name & Date of Photo (DOP) plate & scissor lines.
+                                </p>
+                            </div>
+                            <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-semibold text-blue-500">
+                                <span>Make Sheet</span>
+                                <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                            </div>
+                        </div>
+
+                        <!-- New Card 3: Signature & Document Cleaner -->
+                        <div onclick="switchTool('sigclean')" class="group cursor-pointer rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 hover:border-teal-500/60 hover:shadow-lg transition-all flex flex-col justify-between">
+                            <div>
+                                <div class="w-11 h-11 rounded-xl bg-teal-500/10 text-teal-500 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                                    <i data-lucide="pen-tool" class="w-6 h-6"></i>
+                                </div>
+                                <h3 class="font-bold text-base mb-1">Signature & Doc Cleaner</h3>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                                    Turn dark/shadowy mobile photos of signatures or documents into crisp pure-white backgrounds or transparent PNGs.
+                                </p>
+                            </div>
+                            <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-semibold text-teal-500">
+                                <span>Clean Signature</span>
+                                <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                            </div>
+                        </div>
+
+                        <!-- New Card 4: ID Card Front & Back Combiner -->
+                        <div onclick="switchTool('idcard')" class="group cursor-pointer rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 hover:border-lime-500/60 hover:shadow-lg transition-all flex flex-col justify-between">
+                            <div>
+                                <div class="w-11 h-11 rounded-xl bg-lime-500/10 text-lime-600 dark:text-lime-400 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                                    <i data-lucide="credit-card" class="w-6 h-6"></i>
+                                </div>
+                                <h3 class="font-bold text-base mb-1">ID Card Front + Back Print</h3>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                                    Combine Front & Back photos of Aadhaar, PAN, or Voter ID onto a single A4 page (Side-by-Side or Top-Bottom) for 1-click print.
+                                </p>
+                            </div>
+                            <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-semibold text-lime-600 dark:text-lime-400">
+                                <span>Combine ID</span>
+                                <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Existing Image & PDF Power Tools Grid -->
+                <div>
+                    <h2 class="text-sm font-bold uppercase tracking-wider text-slate-500 dark:text-slate-400 mb-3">Photo Resizer & PDF Power Suite</h2>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <!-- Card 1 -->
+                        <div onclick="switchTool('resizer')" class="group cursor-pointer rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 hover:border-pink-500/50 transition-all flex flex-col justify-between">
+                            <div>
+                                <div class="w-11 h-11 rounded-xl bg-pink-500/10 text-pink-500 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                                    <i data-lucide="scaling" class="w-6 h-6"></i>
+                                </div>
+                                <h3 class="font-bold text-base mb-1">Photo Resizer & Compressor</h3>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                                    Change image dimensions (px or %), lock aspect ratio, adjust quality slider, convert between JPG/PNG/WEBP, and compare file sizes.
+                                </p>
+                            </div>
+                            <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-semibold text-pink-500">
+                                <span>Launch Tool</span>
+                                <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                            </div>
+                        </div>
+
+                        <!-- Card 2 -->
+                        <div onclick="switchTool('img2pdf')" class="group cursor-pointer rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 hover:border-amber-500/50 transition-all flex flex-col justify-between">
+                            <div>
+                                <div class="w-11 h-11 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                                    <i data-lucide="images" class="w-6 h-6"></i>
+                                </div>
+                                <h3 class="font-bold text-base mb-1">Image to PDF Converter</h3>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                                    Combine multiple JPG, PNG, or WEBP photos into a single PDF. Reorder images, pick A4/Letter/Fit page size, orientation, and margins.
+                                </p>
+                            </div>
+                            <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-semibold text-amber-500">
+                                <span>Launch Tool</span>
+                                <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                            </div>
+                        </div>
+
+                        <!-- Card 3 -->
+                        <div onclick="switchTool('merge')" class="group cursor-pointer rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 hover:border-indigo-500/50 transition-all flex flex-col justify-between">
+                            <div>
+                                <div class="w-11 h-11 rounded-xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                                    <i data-lucide="combine" class="w-6 h-6"></i>
+                                </div>
+                                <h3 class="font-bold text-base mb-1">Merge PDF Files</h3>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                                    Combine multiple PDF documents into one unified file. Arrange document order and inspect page counts before merging.
+                                </p>
+                            </div>
+                            <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-semibold text-indigo-500">
+                                <span>Launch Tool</span>
+                                <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                            </div>
+                        </div>
+
+                        <!-- Card 4 -->
+                        <div onclick="switchTool('split')" class="group cursor-pointer rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 hover:border-emerald-500/50 transition-all flex flex-col justify-between">
+                            <div>
+                                <div class="w-11 h-11 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                                    <i data-lucide="scissors" class="w-6 h-6"></i>
+                                </div>
+                                <h3 class="font-bold text-base mb-1">Split & Extract PDF Pages</h3>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                                    View live thumbnails of every page in your PDF. Click pages to select or type custom page ranges (e.g., 1-3, 5) to extract a new PDF.
+                                </p>
+                            </div>
+                            <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-semibold text-emerald-500">
+                                <span>Launch Tool</span>
+                                <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                            </div>
+                        </div>
+
+                        <!-- Card 5 -->
+                        <div onclick="switchTool('rotate')" class="group cursor-pointer rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 hover:border-cyan-500/50 transition-all flex flex-col justify-between">
+                            <div>
+                                <div class="w-11 h-11 rounded-xl bg-cyan-500/10 text-cyan-500 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                                    <i data-lucide="rotate-cw" class="w-6 h-6"></i>
+                                </div>
+                                <h3 class="font-bold text-base mb-1">Rotate PDF Pages</h3>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                                    Rotate individual pages or all pages at once by 90°, 180°, or 270° with real-time visual preview and instant export.
+                                </p>
+                            </div>
+                            <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-semibold text-cyan-500">
+                                <span>Launch Tool</span>
+                                <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                            </div>
+                        </div>
+
+                        <!-- Card 6 -->
+                        <div onclick="switchTool('watermark')" class="group cursor-pointer rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 hover:border-purple-500/50 transition-all flex flex-col justify-between">
+                            <div>
+                                <div class="w-11 h-11 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform">
+                                    <i data-lucide="stamp" class="w-6 h-6"></i>
+                                </div>
+                                <h3 class="font-bold text-base mb-1">Watermark & Page Numbers</h3>
+                                <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
+                                    Stamp custom diagonal or centered text watermarks, adjust opacity/color/size, and automatically add formatted page numbers.
+                                </p>
+                            </div>
+                            <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-semibold text-purple-500">
+                                <span>Launch Tool</span>
+                                <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================== NEW VIEW A: INTERACTIVE PHOTO CROP & SHAPE CUTTER ==================== -->
+            <section id="view-cropper" class="tool-view hidden space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800">
+                    <div class="flex items-center gap-3.5">
+                        <div class="w-11 h-11 rounded-xl bg-orange-500/10 text-orange-500 flex items-center justify-center shrink-0">
+                            <i data-lucide="crop" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-bold">Interactive Photo Crop, Govt Form & Shape Cutter</h2>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Drag crop handles freely, cut into Circle/Rounded shapes, or apply SSC/UPSC/PAN Card exact pixel presets.</p>
+                        </div>
+                    </div>
+                    <button onclick="generateSampleCropPhoto()" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition flex items-center gap-1.5 self-start sm:self-auto">
+                        <i data-lucide="sparkles" class="w-4 h-4 text-orange-500"></i>
+                        Load Sample Portrait
+                    </button>
+                </div>
+
+                <!-- Dropzone -->
+                <div id="cropper-dropzone" class="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-2xl p-6 text-center bg-white dark:bg-slate-900/60 hover:border-orange-500 transition cursor-pointer" onclick="document.getElementById('cropper-file-input').click()">
+                    <input type="file" id="cropper-file-input" accept="image/*" class="hidden" onchange="handleCropperFile(this.files[0])">
+                    <div class="w-12 h-12 rounded-2xl bg-orange-500/10 text-orange-500 flex items-center justify-center mx-auto mb-2">
+                        <i data-lucide="crop" class="w-6 h-6"></i>
+                    </div>
+                    <p class="font-semibold text-sm">Click or drag & drop any photo here to crop & cut</p>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Supports Freehand Crop, Passport Ratio, Govt Form Presets, and Circle Profile Cutter</p>
+                </div>
+
+                <!-- Cropper Workspace -->
+                <div id="cropper-workspace" class="hidden grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <!-- Left: Interactive Canvas Area -->
+                    <div class="lg:col-span-7 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-4 flex flex-col">
+                        <div class="flex flex-wrap items-center justify-between gap-2 mb-3 pb-2 border-b border-slate-100 dark:border-slate-800">
+                            <span class="font-bold text-xs sm:text-sm flex items-center gap-2">
+                                <i data-lucide="move" class="w-4 h-4 text-orange-500"></i>
+                                Drag Box or Corners to Cut Area
+                            </span>
+                            <div class="flex flex-wrap items-center gap-1.5">
+                                <button onclick="cropperRotate(-90)" class="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-orange-500 hover:text-white transition" title="Rotate Left">
+                                    <i data-lucide="rotate-ccw" class="w-4 h-4"></i>
+                                </button>
+                                <button onclick="cropperRotate(90)" class="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-orange-500 hover:text-white transition" title="Rotate Right">
+                                    <i data-lucide="rotate-cw" class="w-4 h-4"></i>
+                                </button>
+                                <button onclick="cropperFlip('h')" class="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-orange-500 hover:text-white transition" title="Flip Horizontal">
+                                    <i data-lucide="flip-horizontal" class="w-4 h-4"></i>
+                                </button>
+                                <button onclick="cropperFlip('v')" class="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-800 hover:bg-orange-500 hover:text-white transition" title="Flip Vertical">
+                                    <i data-lucide="flip-vertical" class="w-4 h-4"></i>
+                                </button>
+                                <button onclick="cropperReset()" class="px-2.5 py-1 rounded-lg text-xs font-medium bg-slate-100 dark:bg-slate-800 hover:bg-rose-500 hover:text-white transition">
+                                    Reset
+                                </button>
+                            </div>
+                        </div>
+
+                        <div id="cropper-stage-wrap" class="w-full h-[380px] sm:h-[440px] rounded-xl overflow-hidden bg-slate-900 flex items-center justify-center">
+                            <img id="cropper-target-img" class="max-w-full max-h-full block" alt="Cropper Target">
                         </div>
                     </div>
 
-                    <!-- Card 2 -->
-                    <div onclick="switchTool('img2pdf')" class="group cursor-pointer rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 hover:border-amber-500/50 dark:hover:border-amber-500/50 hover:shadow-lg hover:shadow-amber-500/5 transition-all flex flex-col justify-between">
+                    <!-- Right: Presets, Shape Cutter & Live Result -->
+                    <div class="lg:col-span-5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 space-y-4">
+                        <h3 class="font-bold text-sm border-b border-slate-100 dark:border-slate-800 pb-2.5 flex items-center gap-2">
+                            <i data-lucide="Sliders" class="w-4 h-4 text-orange-500"></i>
+                            Aspect Ratio & Govt Exam Presets
+                        </h3>
+
+                        <!-- Aspect Ratio Quick Buttons -->
                         <div>
-                            <div class="w-11 h-11 rounded-xl bg-amber-500/10 text-amber-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                                <i data-lucide="images" class="w-6 h-6"></i>
+                            <label class="block text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Aspect Ratio</label>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button onclick="setCropPreset('free', NaN, 0, 0)" class="crop-ratio-btn py-1.5 px-2 rounded-lg text-xs font-semibold bg-orange-500 text-white">Freehand</button>
+                                <button onclick="setCropPreset('passport', 35/45, 413, 531)" class="crop-ratio-btn py-1.5 px-2 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-orange-500 hover:text-white transition">Passport (3.5×4.5)</button>
+                                <button onclick="setCropPreset('square', 1, 600, 600)" class="crop-ratio-btn py-1.5 px-2 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-orange-500 hover:text-white transition">1:1 Square</button>
+                                <button onclick="setCropPreset('sig', 140/60, 140, 60)" class="crop-ratio-btn py-1.5 px-2 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-orange-500 hover:text-white transition">Signature (140×60)</button>
+                                <button onclick="setCropPreset('pan', 25/35, 213, 213)" class="crop-ratio-btn py-1.5 px-2 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-orange-500 hover:text-white transition">NSDL PAN (213×213)</button>
+                                <button onclick="setCropPreset('upsc', 350/350, 350, 350)" class="crop-ratio-btn py-1.5 px-2 rounded-lg text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-orange-500 hover:text-white transition">UPSC (350×350)</button>
                             </div>
-                            <h3 class="font-bold text-base mb-1">Image to PDF Converter</h3>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                                Combine multiple JPG, PNG, or WEBP photos into a single PDF. Reorder images, pick A4/Letter/Fit page size, orientation, and margins.
-                            </p>
                         </div>
-                        <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-semibold text-amber-500">
-                            <span>Launch Tool</span>
-                            <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+
+                        <!-- Cutter Shape Mode -->
+                        <div>
+                            <label class="block text-[11px] font-semibold uppercase tracking-wider text-slate-400 mb-1.5">Cutter Shape (Corner / Circle Cut)</label>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button onclick="setCropShape('rect')" id="shape-rect" class="shape-btn py-2 rounded-xl text-xs font-semibold border border-orange-500 bg-orange-500/10 text-orange-500">Rectangle</button>
+                                <button onclick="setCropShape('rounded')" id="shape-rounded" class="shape-btn py-2 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700">Rounded Box</button>
+                                <button onclick="setCropShape('circle')" id="shape-circle" class="shape-btn py-2 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700">Circle Cut (PNG)</button>
+                            </div>
+                        </div>
+
+                        <!-- Forced Target Export Size (Optional) -->
+                        <div class="grid grid-cols-2 gap-3">
+                            <div>
+                                <label class="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Output Width (px, 0=Auto)</label>
+                                <input type="number" id="crop-out-w" value="0" min="0" max="5000" oninput="renderCroppedPreview()" class="w-full px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold">
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Output Height (px, 0=Auto)</label>
+                                <input type="number" id="crop-out-h" value="0" min="0" max="5000" oninput="renderCroppedPreview()" class="w-full px-3 py-1.5 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold">
+                            </div>
+                        </div>
+
+                        <!-- Live Cropped Preview Box -->
+                        <div class="p-3 rounded-xl checkerboard border border-slate-200 dark:border-slate-800 flex flex-col items-center justify-center min-h-[150px]">
+                            <canvas id="crop-result-canvas" class="max-h-[130px] max-w-full rounded shadow"></canvas>
+                            <span id="crop-result-info" class="mt-2 text-[11px] font-mono bg-black/60 text-white px-2.5 py-0.5 rounded-md">—</span>
+                        </div>
+
+                        <!-- Download Buttons -->
+                        <div class="grid grid-cols-2 gap-2.5">
+                            <button onclick="downloadCroppedOutput('jpg')" class="py-2.5 px-3 rounded-xl bg-gradient-to-r from-orange-500 to-amber-600 hover:from-orange-600 hover:to-amber-700 text-white font-bold text-xs shadow-lg shadow-orange-500/20 flex items-center justify-center gap-1.5 transition">
+                                <i data-lucide="download" class="w-4 h-4"></i>
+                                <span>Download JPG</span>
+                            </button>
+                            <button onclick="downloadCroppedOutput('png')" class="py-2.5 px-3 rounded-xl bg-slate-800 dark:bg-slate-700 hover:bg-slate-900 text-white font-bold text-xs flex items-center justify-center gap-1.5 transition">
+                                <i data-lucide="download" class="w-4 h-4"></i>
+                                <span>Transparent PNG</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================== NEW VIEW B: PASSPORT PHOTO SHEET MAKER ==================== -->
+            <section id="view-passport" class="tool-view hidden space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800">
+                    <div class="flex items-center gap-3.5">
+                        <div class="w-11 h-11 rounded-xl bg-blue-500/10 text-blue-500 flex items-center justify-center shrink-0">
+                            <i data-lucide="grid" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-bold">Passport Size Photo Sheet Maker (with Name & Date)</h2>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Generate ready-to-print 4×6 inch or A4 sheets of 6, 8, 12, or 36 passport photos with cut borders.</p>
+                        </div>
+                    </div>
+                    <button onclick="generateSamplePassportPhoto()" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition flex items-center gap-1.5 self-start sm:self-auto">
+                        <i data-lucide="user-check" class="w-4 h-4 text-blue-500"></i>
+                        Load Demo Candidate Photo
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <!-- Controls -->
+                    <div class="lg:col-span-5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 space-y-4 h-fit">
+                        <div onclick="document.getElementById('passport-file-input').click()" class="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-xl p-4 text-center hover:border-blue-500 cursor-pointer transition">
+                            <input type="file" id="passport-file-input" accept="image/*" class="hidden" onchange="handlePassportFile(this.files[0])">
+                            <i data-lucide="upload" class="w-5 h-5 text-blue-500 mx-auto mb-1"></i>
+                            <p class="text-xs font-semibold">Upload Candidate Photo (JPG/PNG)</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Paper / Sheet Layout</label>
+                            <select id="pp-sheet-type" onchange="renderPassportSheet()" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold">
+                                <option value="4x6_8">4×6 Inch Photo Lab Sheet (8 Photos)</option>
+                                <option value="4x6_6">4×6 Inch Sheet (6 Large Photos)</option>
+                                <option value="A4_6">A4 Top Row Strip (6 Photos — Save Paper)</option>
+                                <option value="A4_12">A4 Two Rows (12 Photos)</option>
+                                <option value="A4_30">A4 Full Sheet (30 Photos — 5×6 Grid)</option>
+                            </select>
+                        </div>
+
+                        <!-- Candidate Name & Date of Photo (SSC / Govt Exam requirement) -->
+                        <div class="p-3.5 rounded-xl bg-slate-50 dark:bg-slate-800/70 border border-slate-200 dark:border-slate-700 space-y-2.5">
+                            <span class="text-xs font-bold flex items-center gap-1.5 text-blue-500">
+                                <i data-lucide="calendar" class="w-3.5 h-3.5"></i>
+                                Name & Date on Photo (SSC / Exam Option)
+                            </span>
+                            <div>
+                                <input type="text" id="pp-name-text" placeholder="Candidate Name (e.g. SHUBHAM KUMAR)" oninput="renderPassportSheet()" class="w-full px-3 py-1.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs">
+                            </div>
+                            <div>
+                                <input type="text" id="pp-date-text" placeholder="Date of Photo (e.g. DOP: 14/10/2026)" oninput="renderPassportSheet()" class="w-full px-3 py-1.5 rounded-lg bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-700 text-xs">
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between bg-slate-50 dark:bg-slate-800/60 px-3.5 py-2.5 rounded-xl">
+                            <label for="pp-border" class="text-xs font-medium cursor-pointer">Add Black Border & Scissor Cut Lines</label>
+                            <input type="checkbox" id="pp-border" checked onchange="renderPassportSheet()" class="w-4 h-4 accent-blue-500 rounded cursor-pointer">
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2.5 pt-1">
+                            <button onclick="downloadPassportSheetJpg()" class="py-3 px-3 rounded-xl bg-gradient-to-r from-blue-500 to-indigo-600 hover:from-blue-600 hover:to-indigo-700 text-white font-bold text-xs shadow-lg shadow-blue-500/25 flex items-center justify-center gap-1.5 transition">
+                                <i data-lucide="image-down" class="w-4 h-4"></i>
+                                <span>Download Sheet JPG</span>
+                            </button>
+                            <button onclick="downloadPassportSheetPdf()" class="py-3 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-1.5 transition">
+                                <i data-lucide="printer" class="w-4 h-4"></i>
+                                <span>Download Print PDF</span>
+                            </button>
                         </div>
                     </div>
 
-                    <!-- Card 3 -->
-                    <div onclick="switchTool('merge')" class="group cursor-pointer rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 hover:border-indigo-500/50 dark:hover:border-indigo-500/50 hover:shadow-lg hover:shadow-indigo-500/5 transition-all flex flex-col justify-between">
-                        <div>
-                            <div class="w-11 h-11 rounded-xl bg-indigo-500/10 text-indigo-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                                <i data-lucide="combine" class="w-6 h-6"></i>
-                            </div>
-                            <h3 class="font-bold text-base mb-1">Merge PDF Files</h3>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                                Combine multiple PDF documents into one unified file. Arrange document order and inspect page counts before merging.
-                            </p>
+                    <!-- Sheet Live Preview -->
+                    <div class="lg:col-span-7 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 flex flex-col">
+                        <div class="flex items-center justify-between mb-3">
+                            <span class="font-bold text-sm">Live Print Sheet Preview (300 DPI Ready)</span>
+                            <span id="pp-sheet-badge" class="text-xs font-mono text-slate-400">4×6 Inch (8 Photos)</span>
                         </div>
-                        <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-semibold text-indigo-500">
-                            <span>Launch Tool</span>
-                            <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                        <div class="flex-1 min-h-[380px] rounded-xl checkerboard border border-slate-200 dark:border-slate-800 p-4 flex items-center justify-center overflow-auto">
+                            <canvas id="passport-sheet-canvas" class="max-h-[460px] max-w-full bg-white shadow-xl rounded"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================== NEW VIEW C: SIGNATURE & DOCUMENT WHITENER ==================== -->
+            <section id="view-sigclean" class="tool-view hidden space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800">
+                    <div class="flex items-center gap-3.5">
+                        <div class="w-11 h-11 rounded-xl bg-teal-500/10 text-teal-500 flex items-center justify-center shrink-0">
+                            <i data-lucide="pen-tool" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-bold">Smart Signature & Document Scanner Enhancer</h2>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Remove gray/yellow paper shadows from phone photos of signatures or documents & make ink crisp.</p>
+                        </div>
+                    </div>
+                    <button onclick="generateSampleSignature()" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition flex items-center gap-1.5 self-start sm:self-auto">
+                        <i data-lucide="sparkles" class="w-4 h-4 text-teal-500"></i>
+                        Load Shadowy Signature Demo
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <div class="lg:col-span-5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 space-y-4 h-fit">
+                        <div onclick="document.getElementById('sig-file-input').click()" class="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-xl p-4 text-center hover:border-teal-500 cursor-pointer transition">
+                            <input type="file" id="sig-file-input" accept="image/*" class="hidden" onchange="handleSigFile(this.files[0])">
+                            <i data-lucide="upload-cloud" class="w-5 h-5 text-teal-500 mx-auto mb-1"></i>
+                            <p class="text-xs font-semibold">Upload Signature or Document Photo</p>
+                        </div>
+
+                        <div>
+                            <div class="flex justify-between text-xs font-medium mb-1">
+                                <span>Background Whitening Threshold</span>
+                                <span id="sig-thresh-label" class="font-bold text-teal-500">165</span>
+                            </div>
+                            <input type="range" id="sig-threshold" min="60" max="240" value="165" oninput="processSignatureClean()" class="w-full accent-teal-500">
+                            <p class="text-[10px] text-slate-400 mt-0.5">Slide right to remove darker paper shadows.</p>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1.5">Ink Color Output</label>
+                            <div class="grid grid-cols-3 gap-2">
+                                <button onclick="setSigInk('black')" id="ink-black" class="ink-btn py-2 rounded-xl text-xs font-semibold border border-teal-500 bg-teal-500/10 text-teal-500">Jet Black</button>
+                                <button onclick="setSigInk('blue')" id="ink-blue" class="ink-btn py-2 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700">Royal Blue Pen</button>
+                                <button onclick="setSigInk('orig')" id="ink-orig" class="ink-btn py-2 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700">Original Ink</button>
+                            </div>
+                        </div>
+
+                        <div class="flex items-center justify-between bg-slate-50 dark:bg-slate-800/60 px-3.5 py-2.5 rounded-xl">
+                            <label for="sig-transparent" class="text-xs font-medium cursor-pointer">Make Background Transparent (PNG)</label>
+                            <input type="checkbox" id="sig-transparent" onchange="processSignatureClean()" class="w-4 h-4 accent-teal-500 rounded cursor-pointer">
+                        </div>
+
+                        <button onclick="downloadCleanedSignature()" class="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-teal-500 to-emerald-600 hover:from-teal-600 hover:to-emerald-700 text-white font-bold text-xs sm:text-sm shadow-lg shadow-teal-500/25 flex items-center justify-center gap-2 transition">
+                            <i data-lucide="download" class="w-4 h-4"></i>
+                            <span>Download Crisp Signature / Doc</span>
+                        </button>
+                    </div>
+
+                    <div class="lg:col-span-7 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 flex flex-col">
+                        <span class="font-bold text-sm mb-3">Before vs. After Cleaned Result</span>
+                        <div class="flex-1 rounded-xl checkerboard border border-slate-200 dark:border-slate-800 p-4 flex items-center justify-center min-h-[300px]">
+                            <canvas id="sig-clean-canvas" class="max-h-[360px] max-w-full rounded shadow-lg"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ==================== NEW VIEW D: ID CARD FRONT + BACK COMBINER ==================== -->
+            <section id="view-idcard" class="tool-view hidden space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-white dark:bg-slate-900 p-5 rounded-2xl border border-slate-200 dark:border-slate-800">
+                    <div class="flex items-center gap-3.5">
+                        <div class="w-11 h-11 rounded-xl bg-lime-500/10 text-lime-600 dark:text-lime-400 flex items-center justify-center shrink-0">
+                            <i data-lucide="credit-card" class="w-6 h-6"></i>
+                        </div>
+                        <div>
+                            <h2 class="text-lg font-bold">ID Card Front + Back Single Page Combiner</h2>
+                            <p class="text-xs text-slate-500 dark:text-slate-400">Place Front & Back of Aadhaar Card, PAN Card, or Voter ID neatly on a single A4 page for printing.</p>
+                        </div>
+                    </div>
+                    <button onclick="generateSampleIdCards()" class="px-3.5 py-2 rounded-xl text-xs font-semibold bg-slate-100 dark:bg-slate-800 hover:bg-slate-200 dark:hover:bg-slate-700 transition flex items-center gap-1.5 self-start sm:self-auto">
+                        <i data-lucide="sparkles" class="w-4 h-4 text-lime-500"></i>
+                        Load Sample Front & Back ID
+                    </button>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <div class="lg:col-span-5 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 space-y-4 h-fit">
+                        <div class="grid grid-cols-2 gap-3">
+                            <div onclick="document.getElementById('id-front-input').click()" class="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-xl p-4 text-center hover:border-lime-500 cursor-pointer transition">
+                                <input type="file" id="id-front-input" accept="image/*" class="hidden" onchange="handleIdCardSide('front', this.files[0])">
+                                <i data-lucide="credit-card" class="w-5 h-5 text-lime-500 mx-auto mb-1"></i>
+                                <p class="text-xs font-bold">1. Front Side</p>
+                                <span id="id-front-status" class="text-[10px] text-slate-400">Click to upload</span>
+                            </div>
+                            <div onclick="document.getElementById('id-back-input').click()" class="border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-xl p-4 text-center hover:border-lime-500 cursor-pointer transition">
+                                <input type="file" id="id-back-input" accept="image/*" class="hidden" onchange="handleIdCardSide('back', this.files[0])">
+                                <i data-lucide="credit-card" class="w-5 h-5 text-lime-500 mx-auto mb-1"></i>
+                                <p class="text-xs font-bold">2. Back Side</p>
+                                <span id="id-back-status" class="text-[10px] text-slate-400">Click to upload</span>
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Page Arrangement Layout</label>
+                            <select id="id-layout-mode" onchange="renderIdCardSheet()" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-semibold">
+                                <option value="sbs">Side-by-Side on Top of A4 (Best for Xerox/Print)</option>
+                                <option value="vertical">Top & Bottom Stacked on A4</option>
+                                <option value="cardonly">Tight Merged Card Image Only (No A4 Margin)</option>
+                            </select>
+                        </div>
+
+                        <div class="grid grid-cols-2 gap-2.5">
+                            <button onclick="downloadIdCardOutput('jpg')" class="py-3 px-3 rounded-xl bg-lime-600 hover:bg-lime-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow transition">
+                                <i data-lucide="download" class="w-4 h-4"></i>
+                                <span>Download JPG</span>
+                            </button>
+                            <button onclick="downloadIdCardOutput('pdf')" class="py-3 px-3 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow transition">
+                                <i data-lucide="printer" class="w-4 h-4"></i>
+                                <span>Download A4 PDF</span>
+                            </button>
                         </div>
                     </div>
 
-                    <!-- Card 4 -->
-                    <div onclick="switchTool('split')" class="group cursor-pointer rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 hover:border-emerald-500/50 dark:hover:border-emerald-500/50 hover:shadow-lg hover:shadow-emerald-500/5 transition-all flex flex-col justify-between">
-                        <div>
-                            <div class="w-11 h-11 rounded-xl bg-emerald-500/10 text-emerald-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                                <i data-lucide="scissors" class="w-6 h-6"></i>
-                            </div>
-                            <h3 class="font-bold text-base mb-1">Split & Extract PDF Pages</h3>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                                View live thumbnails of every page in your PDF. Click pages to select or type custom page ranges (e.g., 1-3, 5) to extract a new PDF.
-                            </p>
-                        </div>
-                        <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-semibold text-emerald-500">
-                            <span>Launch Tool</span>
-                            <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
-                        </div>
-                    </div>
-
-                    <!-- Card 5 -->
-                    <div onclick="switchTool('rotate')" class="group cursor-pointer rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 hover:border-cyan-500/50 dark:hover:border-cyan-500/50 hover:shadow-lg hover:shadow-cyan-500/5 transition-all flex flex-col justify-between">
-                        <div>
-                            <div class="w-11 h-11 rounded-xl bg-cyan-500/10 text-cyan-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                                <i data-lucide="rotate-cw" class="w-6 h-6"></i>
-                            </div>
-                            <h3 class="font-bold text-base mb-1">Rotate PDF Pages</h3>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                                Rotate individual pages or all pages at once by 90°, 180°, or 270° with real-time visual preview and instant export.
-                            </p>
-                        </div>
-                        <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-semibold text-cyan-500">
-                            <span>Launch Tool</span>
-                            <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
-                        </div>
-                    </div>
-
-                    <!-- Card 6 -->
-                    <div onclick="switchTool('watermark')" class="group cursor-pointer rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 p-5 hover:border-purple-500/50 dark:hover:border-purple-500/50 hover:shadow-lg hover:shadow-purple-500/5 transition-all flex flex-col justify-between">
-                        <div>
-                            <div class="w-11 h-11 rounded-xl bg-purple-500/10 text-purple-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-                                <i data-lucide="stamp" class="w-6 h-6"></i>
-                            </div>
-                            <h3 class="font-bold text-base mb-1">Watermark & Page Numbers</h3>
-                            <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-                                Stamp custom diagonal or centered text watermarks, adjust opacity/color/size, and automatically add formatted page numbers.
-                            </p>
-                        </div>
-                        <div class="mt-4 pt-3 border-t border-slate-100 dark:border-slate-800/80 flex items-center justify-between text-xs font-semibold text-purple-500">
-                            <span>Launch Tool</span>
-                            <i data-lucide="arrow-right" class="w-4 h-4 group-hover:translate-x-1 transition-transform"></i>
+                    <div class="lg:col-span-7 bg-white dark:bg-slate-900 rounded-2xl border border-slate-200 dark:border-slate-800 p-5 flex flex-col">
+                        <span class="font-bold text-sm mb-3">Live Combined ID Print Preview</span>
+                        <div class="flex-1 min-h-[340px] rounded-xl checkerboard border border-slate-200 dark:border-slate-800 p-4 flex items-center justify-center">
+                            <canvas id="id-card-canvas" class="max-h-[420px] max-w-full bg-white rounded shadow-xl"></canvas>
                         </div>
                     </div>
                 </div>
@@ -394,12 +850,12 @@
                             <label class="block text-xs font-medium text-slate-600 dark:text-slate-300 mb-1">Standard Size Templates</label>
                             <select id="resizer-preset-select" onchange="applyStandardPreset(this.value)" class="w-full px-3 py-2 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-200 dark:border-slate-700 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-pink-500">
                                 <option value="">Custom Dimensions</option>
+                                <option value="413x531">Passport Photo (413 × 531 px)</option>
+                                <option value="140x60">Exam Signature (140 × 60 px)</option>
+                                <option value="213x213">NSDL PAN Photo (213 × 213 px)</option>
                                 <option value="1920x1080">Full HD (1920 × 1080 px)</option>
-                                <option value="1280x720">HD 720p (1280 × 720 px)</option>
                                 <option value="1080x1080">Instagram Square (1080 × 1080 px)</option>
                                 <option value="800x600">Web Standard (800 × 600 px)</option>
-                                <option value="413x531">Passport Photo (413 × 531 px)</option>
-                                <option value="300x300">Profile Avatar (300 × 300 px)</option>
                             </select>
                         </div>
 
@@ -421,7 +877,7 @@
                             </div>
                             <input type="range" id="resizer-quality" min="5" max="100" value="85" oninput="updateResizerPreview()" class="w-full accent-pink-500 cursor-pointer">
                             <div class="flex justify-between text-[10px] text-slate-400">
-                                <span>Smallest File (5%)</span>
+                                <span>Smallest KB (5%)</span>
                                 <span>Balanced</span>
                                 <span>Max Quality (100%)</span>
                             </div>
@@ -875,6 +1331,25 @@
         // Global Application State
         let currentTool = 'dashboard';
 
+        // New Tool A: Cropper State
+        let cropperInstance = null;
+        let cropShapeMode = 'rect'; // 'rect', 'rounded', 'circle'
+        let flipXState = 1;
+        let flipYState = 1;
+
+        // New Tool B: Passport Photo Sheet State
+        let passportImg = null;
+
+        // New Tool C: Signature Cleaner State
+        let sigSourceImg = null;
+        let sigInkMode = 'black';
+
+        // New Tool D: ID Card Combiner State
+        let idCardState = {
+            frontImg: null,
+            backImg: null
+        };
+
         // Tool 1: Resizer State
         let resizerState = {
             originalFile: null,
@@ -888,14 +1363,14 @@
 
         // Tool 2: Image to PDF State
         let img2PdfState = {
-            items: [], // { id, name, dataUrl, width, height, size }
+            items: [],
             orientation: 'auto',
             margin: 24
         };
 
         // Tool 3: Merge PDFs State
         let mergeState = {
-            files: [] // { id, name, size, arrayBuffer, pageCount }
+            files: []
         };
 
         // Tool 4: Split PDF State
@@ -903,7 +1378,7 @@
             fileName: '',
             arrayBuffer: null,
             pageCount: 0,
-            selectedPages: new Set() // 1-indexed page numbers
+            selectedPages: new Set()
         };
 
         // Tool 5: Rotate PDF State
@@ -911,7 +1386,7 @@
             fileName: '',
             arrayBuffer: null,
             pageCount: 0,
-            rotations: [] // degrees per page index
+            rotations: []
         };
 
         // Tool 6: Watermark PDF State
@@ -937,7 +1412,7 @@
             return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
         }
 
-        // Custom non-blocking Toast Message (Replaces alert)
+        // Custom non-blocking Toast Message
         function showToast(message, type = 'success') {
             const container = document.getElementById('toast-container');
             const toast = document.createElement('div');
@@ -971,13 +1446,673 @@
             if (target) target.classList.remove('hidden');
 
             document.querySelectorAll('.tool-nav-btn').forEach(btn => {
-                btn.className = 'tool-nav-btn flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-medium whitespace-nowrap transition-all text-slate-600 dark:text-slate-400 hover:bg-slate-200/60 dark:hover:bg-slate-800/60';
+                btn.className = 'tool-nav-btn flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all text-slate-600 dark:text-slate-400 hover:bg-slate-200/60 dark:hover:bg-slate-800/60';
             });
             const activeBtn = document.getElementById(`nav-${toolId}`);
             if (activeBtn) {
-                activeBtn.className = 'tool-nav-btn flex items-center gap-3 px-3.5 py-2.5 rounded-xl text-sm font-semibold whitespace-nowrap transition-all bg-indigo-600 text-white shadow-md shadow-indigo-500/25';
+                activeBtn.className = 'tool-nav-btn flex items-center gap-3 px-3.5 py-2 rounded-xl text-sm font-semibold whitespace-nowrap transition-all bg-indigo-600 text-white shadow-md shadow-indigo-500/25';
             }
             lucide.createIcons();
+        }
+
+        /* ==================== NEW TOOL A: INTERACTIVE PHOTO CROP & SHAPE CUTTER ==================== */
+        function handleCropperFile(file) {
+            if (!file || !file.type.startsWith('image/')) {
+                showToast('Please select a valid image file.', 'error');
+                return;
+            }
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                initCropperWithDataUrl(e.target.result);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function initCropperWithDataUrl(dataUrl) {
+            document.getElementById('cropper-workspace').classList.remove('hidden');
+            const imgEl = document.getElementById('cropper-target-img');
+            if (cropperInstance) {
+                cropperInstance.destroy();
+                cropperInstance = null;
+            }
+            imgEl.onload = () => {
+                flipXState = 1;
+                flipYState = 1;
+                cropperInstance = new Cropper(imgEl, {
+                    viewMode: 1,
+                    autoCropArea: 0.85,
+                    responsive: true,
+                    background: true,
+                    crop() {
+                        renderCroppedPreview();
+                    }
+                });
+                showToast('Photo loaded into Crop & Cutter Studio!');
+            };
+            imgEl.src = dataUrl;
+        }
+
+        function setCropPreset(name, ratio, outW, outH) {
+            if (!cropperInstance) return;
+            cropperInstance.setAspectRatio(ratio);
+            document.getElementById('crop-out-w').value = outW || 0;
+            document.getElementById('crop-out-h').value = outH || 0;
+            renderCroppedPreview();
+        }
+
+        function setCropShape(shape) {
+            cropShapeMode = shape;
+            const stage = document.getElementById('cropper-stage-wrap');
+            if (shape === 'circle') {
+                stage.classList.add('circle-crop-mode');
+                if (cropperInstance) cropperInstance.setAspectRatio(1);
+            } else {
+                stage.classList.remove('circle-crop-mode');
+            }
+            document.querySelectorAll('.shape-btn').forEach(b => {
+                b.className = 'shape-btn py-2 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700';
+            });
+            document.getElementById(`shape-${shape}`).className = 'shape-btn py-2 rounded-xl text-xs font-semibold border border-orange-500 bg-orange-500/10 text-orange-500';
+            renderCroppedPreview();
+        }
+
+        function cropperRotate(deg) {
+            if (cropperInstance) cropperInstance.rotate(deg);
+        }
+
+        function cropperFlip(dir) {
+            if (!cropperInstance) return;
+            if (dir === 'h') {
+                flipXState = flipXState * -1;
+                cropperInstance.scaleX(flipXState);
+            } else {
+                flipYState = flipYState * -1;
+                cropperInstance.scaleY(flipYState);
+            }
+        }
+
+        function cropperReset() {
+            if (!cropperInstance) return;
+            cropperInstance.reset();
+            document.getElementById('crop-out-w').value = 0;
+            document.getElementById('crop-out-h').value = 0;
+            renderCroppedPreview();
+        }
+
+        function renderCroppedPreview() {
+            if (!cropperInstance) return;
+            const reqW = parseInt(document.getElementById('crop-out-w').value) || 0;
+            const reqH = parseInt(document.getElementById('crop-out-h').value) || 0;
+
+            const opts = {};
+            if (reqW > 0) opts.width = reqW;
+            if (reqH > 0) opts.height = reqH;
+
+            const rawCanvas = cropperInstance.getCroppedCanvas(opts);
+            if (!rawCanvas) return;
+
+            const outCanvas = document.getElementById('crop-result-canvas');
+            outCanvas.width = rawCanvas.width;
+            outCanvas.height = rawCanvas.height;
+            const ctx = outCanvas.getContext('2d');
+            ctx.clearRect(0, 0, outCanvas.width, outCanvas.height);
+
+            if (cropShapeMode === 'circle') {
+                ctx.save();
+                ctx.beginPath();
+                ctx.arc(
+                    outCanvas.width / 2,
+                    outCanvas.height / 2,
+                    Math.min(outCanvas.width, outCanvas.height) / 2,
+                    0,
+                    Math.PI * 2
+                );
+                ctx.closePath();
+                ctx.clip();
+                ctx.drawImage(rawCanvas, 0, 0);
+                ctx.restore();
+            } else if (cropShapeMode === 'rounded') {
+                const r = Math.min(outCanvas.width, outCanvas.height) * 0.12;
+                ctx.save();
+                ctx.beginPath();
+                ctx.roundRect(0, 0, outCanvas.width, outCanvas.height, r);
+                ctx.closePath();
+                ctx.clip();
+                ctx.drawImage(rawCanvas, 0, 0);
+                ctx.restore();
+            } else {
+                ctx.drawImage(rawCanvas, 0, 0);
+            }
+
+            document.getElementById('crop-result-info').textContent = `Cut Size: ${outCanvas.width} × ${outCanvas.height} px`;
+        }
+
+        function downloadCroppedOutput(ext) {
+            const outCanvas = document.getElementById('crop-result-canvas');
+            if (!outCanvas || !outCanvas.width) {
+                showToast('Please load and crop an image first!', 'error');
+                return;
+            }
+            const exportCanvas = document.createElement('canvas');
+            exportCanvas.width = outCanvas.width;
+            exportCanvas.height = outCanvas.height;
+            const ctx = exportCanvas.getContext('2d');
+
+            if (ext === 'jpg') {
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fillRect(0, 0, exportCanvas.width, exportCanvas.height);
+            }
+            ctx.drawImage(outCanvas, 0, 0);
+
+            const mime = ext === 'png' ? 'image/png' : 'image/jpeg';
+            const a = document.createElement('a');
+            a.href = exportCanvas.toDataURL(mime, 0.94);
+            a.download = `shubham-cropped-${outCanvas.width}x${outCanvas.height}.${ext}`;
+            a.click();
+            showToast(`Downloaded cropped ${ext.toUpperCase()}!`);
+        }
+
+        function generateSampleCropPhoto() {
+            const c = document.createElement('canvas');
+            c.width = 900;
+            c.height = 1000;
+            const ctx = c.getContext('2d');
+
+            // Studio backdrop
+            const g = ctx.createLinearGradient(0, 0, 0, 1000);
+            g.addColorStop(0, '#0284c7');
+            g.addColorStop(1, '#1e3a8a');
+            ctx.fillStyle = g;
+            ctx.fillRect(0, 0, 900, 1000);
+
+            // Shoulders / Suit
+            ctx.fillStyle = '#1e293b';
+            ctx.beginPath();
+            ctx.ellipse(450, 960, 310, 240, 0, Math.PI, 0, false);
+            ctx.fill();
+
+            // White Shirt Collar
+            ctx.fillStyle = '#ffffff';
+            ctx.beginPath();
+            ctx.moveTo(370, 740);
+            ctx.lineTo(530, 740);
+            ctx.lineTo(450, 910);
+            ctx.closePath();
+            ctx.fill();
+
+            // Tie
+            ctx.fillStyle = '#ef4444';
+            ctx.beginPath();
+            ctx.moveTo(435, 780);
+            ctx.lineTo(465, 780);
+            ctx.lineTo(475, 930);
+            ctx.lineTo(450, 960);
+            ctx.lineTo(425, 930);
+            ctx.closePath();
+            ctx.fill();
+
+            // Neck
+            ctx.fillStyle = '#f1c27d';
+            ctx.fillRect(405, 620, 90, 140);
+
+            // Face
+            ctx.fillStyle = '#ffdbac';
+            ctx.beginPath();
+            ctx.ellipse(450, 460, 155, 195, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Hair
+            ctx.fillStyle = '#0f172a';
+            ctx.beginPath();
+            ctx.ellipse(450, 310, 162, 85, 0, Math.PI, 0, false);
+            ctx.fill();
+
+            // Eyes & Smile
+            ctx.fillStyle = '#0f172a';
+            ctx.beginPath(); ctx.arc(395, 440, 12, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.arc(505, 440, 12, 0, Math.PI * 2); ctx.fill();
+            ctx.lineWidth = 6;
+            ctx.strokeStyle = '#9a3412';
+            ctx.beginPath(); ctx.arc(450, 525, 42, 0.15 * Math.PI, 0.85 * Math.PI); ctx.stroke();
+
+            initCropperWithDataUrl(c.toDataURL('image/jpeg', 0.92));
+        }
+
+        /* ==================== NEW TOOL B: PASSPORT PHOTO SHEET MAKER ==================== */
+        function handlePassportFile(file) {
+            if (!file || !file.type.startsWith('image/')) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    passportImg = img;
+                    renderPassportSheet();
+                    showToast('Candidate photo loaded onto Passport Sheet!');
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function renderPassportSheet() {
+            if (!passportImg) {
+                generateSamplePassportPhoto();
+                return;
+            }
+            const layout = document.getElementById('pp-sheet-type').value;
+            const nameText = document.getElementById('pp-name-text').value.trim();
+            const dateText = document.getElementById('pp-date-text').value.trim();
+            const showBorder = document.getElementById('pp-border').checked;
+
+            const canvas = document.getElementById('passport-sheet-canvas');
+            const ctx = canvas.getContext('2d');
+
+            // Standard configurations (scaled nicely for crisp print)
+            let sheetW = 1200, sheetH = 1800, cols = 2, rows = 4, pw = 413, ph = 531;
+            let badgeText = '';
+
+            if (layout === '4x6_8') {
+                sheetW = 1800; sheetH = 1200; cols = 4; rows = 2; pw = 390; ph = 490;
+                badgeText = '4×6 Inch Sheet • 8 Passport Photos';
+            } else if (layout === '4x6_6') {
+                sheetW = 1800; sheetH = 1200; cols = 3; rows = 2; pw = 413; ph = 531;
+                badgeText = '4×6 Inch Sheet • 6 Standard Photos';
+            } else if (layout === 'A4_6') {
+                sheetW = 2480; sheetH = 3508; cols = 6; rows = 1; pw = 360; ph = 460;
+                badgeText = 'A4 Sheet • 6 Photos Top Row';
+            } else if (layout === 'A4_12') {
+                sheetW = 2480; sheetH = 3508; cols = 6; rows = 2; pw = 360; ph = 460;
+                badgeText = 'A4 Sheet • 12 Photos (2 Rows)';
+            } else if (layout === 'A4_30') {
+                sheetW = 2480; sheetH = 3508; cols = 6; rows = 5; pw = 360; ph = 460;
+                badgeText = 'A4 Full Sheet • 30 Photos (6×5 Grid)';
+            }
+
+            document.getElementById('pp-sheet-badge').textContent = badgeText;
+            canvas.width = sheetW;
+            canvas.height = sheetH;
+
+            // Pure White Sheet Paper
+            ctx.fillStyle = '#FFFFFF';
+            ctx.fillRect(0, 0, sheetW, sheetH);
+
+            const gapX = Math.floor((sheetW - cols * pw) / (cols + 1));
+            const gapY = layout.startsWith('A4') ? 55 : Math.floor((sheetH - rows * ph) / (rows + 1));
+
+            for (let r = 0; r < rows; r++) {
+                for (let c = 0; c < cols; c++) {
+                    const x = gapX + c * (pw + gapX);
+                    const y = gapY + r * (ph + gapY);
+
+                    // Center-crop candidate image to passport aspect ratio
+                    const targetRatio = pw / ph;
+                    const srcRatio = passportImg.naturalWidth / passportImg.naturalHeight;
+                    let sx = 0, sy = 0, sw = passportImg.naturalWidth, sh = passportImg.naturalHeight;
+                    if (srcRatio > targetRatio) {
+                        sw = passportImg.naturalHeight * targetRatio;
+                        sx = (passportImg.naturalWidth - sw) / 2;
+                    } else {
+                        sh = passportImg.naturalWidth / targetRatio;
+                        sy = (passportImg.naturalHeight - sh) / 2;
+                    }
+
+                    ctx.drawImage(passportImg, sx, sy, sw, sh, x, y, pw, ph);
+
+                    // Optional Name & Date Plate at bottom of each photo
+                    if (nameText || dateText) {
+                        const plateH = (nameText && dateText) ? Math.round(ph * 0.17) : Math.round(ph * 0.10);
+                        ctx.fillStyle = '#FFFFFF';
+                        ctx.fillRect(x, y + ph - plateH, pw, plateH);
+                        ctx.fillStyle = '#000000';
+                        ctx.textAlign = 'center';
+
+                        if (nameText && dateText) {
+                            ctx.font = `bold ${Math.round(pw * 0.068)}px Inter, Arial, sans-serif`;
+                            ctx.fillText(nameText.toUpperCase(), x + pw / 2, y + ph - plateH + Math.round(plateH * 0.45));
+                            ctx.font = `bold ${Math.round(pw * 0.062)}px Inter, Arial, sans-serif`;
+                            ctx.fillText(dateText, x + pw / 2, y + ph - Math.round(plateH * 0.16));
+                        } else {
+                            ctx.font = `bold ${Math.round(pw * 0.07)}px Inter, Arial, sans-serif`;
+                            ctx.fillText((nameText || dateText).toUpperCase(), x + pw / 2, y + ph - Math.round(plateH * 0.28));
+                        }
+                    }
+
+                    // Crisp Border & Cut Lines
+                    if (showBorder) {
+                        ctx.lineWidth = 3;
+                        ctx.strokeStyle = '#0f172a';
+                        ctx.strokeRect(x, y, pw, ph);
+
+                        ctx.lineWidth = 1;
+                        ctx.setLineDash([8, 6]);
+                        ctx.strokeStyle = '#94a3b8';
+                        ctx.strokeRect(x - 6, y - 6, pw + 12, ph + 12);
+                        ctx.setLineDash([]);
+                    }
+                }
+            }
+        }
+
+        function generateSamplePassportPhoto() {
+            const c = document.createElement('canvas');
+            c.width = 413;
+            c.height = 531;
+            const ctx = c.getContext('2d');
+            ctx.fillStyle = '#0284c7';
+            ctx.fillRect(0, 0, 413, 531);
+
+            // Suit
+            ctx.fillStyle = '#0f172a';
+            ctx.beginPath();
+            ctx.ellipse(206, 520, 165, 130, 0, Math.PI, 0, false);
+            ctx.fill();
+
+            // Neck & Face
+            ctx.fillStyle = '#f1c27d';
+            ctx.fillRect(181, 320, 50, 80);
+            ctx.fillStyle = '#ffdbac';
+            ctx.beginPath();
+            ctx.ellipse(206, 235, 85, 108, 0, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Hair
+            ctx.fillStyle = '#1e293b';
+            ctx.beginPath();
+            ctx.ellipse(206, 150, 88, 48, 0, Math.PI, 0, false);
+            ctx.fill();
+
+            // Eyes & Smile
+            ctx.fillStyle = '#0f172a';
+            ctx.beginPath(); ctx.arc(176, 225, 7, 0, Math.PI * 2); ctx.fill();
+            ctx.beginPath(); ctx.arc(236, 225, 7, 0, Math.PI * 2); ctx.fill();
+            ctx.lineWidth = 4;
+            ctx.strokeStyle = '#7c2d12';
+            ctx.beginPath(); ctx.arc(206, 272, 24, 0.15 * Math.PI, 0.85 * Math.PI); ctx.stroke();
+
+            const img = new Image();
+            img.onload = () => {
+                passportImg = img;
+                renderPassportSheet();
+            };
+            img.src = c.toDataURL('image/jpeg', 0.95);
+        }
+
+        function downloadPassportSheetJpg() {
+            const canvas = document.getElementById('passport-sheet-canvas');
+            const a = document.createElement('a');
+            a.href = canvas.toDataURL('image/jpeg', 0.95);
+            a.download = 'shubham-passport-photo-sheet.jpg';
+            a.click();
+            showToast('Downloaded Passport Photo Sheet JPG!');
+        }
+
+        async function downloadPassportSheetPdf() {
+            const canvas = document.getElementById('passport-sheet-canvas');
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.94);
+            const jpgBytes = await imageDataUrlToJpegBytes(dataUrl);
+            const { PDFDocument } = PDFLib;
+            const pdfDoc = await PDFDocument.create();
+            const embedded = await pdfDoc.embedJpg(jpgBytes);
+            const page = pdfDoc.addPage([embedded.width * 0.24, embedded.height * 0.24]);
+            page.drawImage(embedded, {
+                x: 0,
+                y: 0,
+                width: embedded.width * 0.24,
+                height: embedded.height * 0.24
+            });
+            const bytes = await pdfDoc.save();
+            downloadPdfBytes(bytes, 'shubham-passport-photo-sheet.pdf');
+            showToast('Downloaded ready-to-print Passport Sheet PDF!');
+        }
+
+        /* ==================== NEW TOOL C: SIGNATURE & DOCUMENT CLEANER ==================== */
+        function handleSigFile(file) {
+            if (!file || !file.type.startsWith('image/')) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    sigSourceImg = img;
+                    processSignatureClean();
+                    showToast('Signature loaded! Adjust threshold slider if needed.');
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function setSigInk(mode) {
+            sigInkMode = mode;
+            document.querySelectorAll('.ink-btn').forEach(b => {
+                b.className = 'ink-btn py-2 rounded-xl text-xs font-semibold border border-slate-200 dark:border-slate-700';
+            });
+            document.getElementById(`ink-${mode}`).className = 'ink-btn py-2 rounded-xl text-xs font-semibold border border-teal-500 bg-teal-500/10 text-teal-500';
+            processSignatureClean();
+        }
+
+        function processSignatureClean() {
+            if (!sigSourceImg) {
+                generateSampleSignature();
+                return;
+            }
+            const thresh = parseInt(document.getElementById('sig-threshold').value) || 165;
+            const transparent = document.getElementById('sig-transparent').checked;
+            document.getElementById('sig-thresh-label').textContent = thresh;
+
+            const canvas = document.getElementById('sig-clean-canvas');
+            canvas.width = sigSourceImg.naturalWidth;
+            canvas.height = sigSourceImg.naturalHeight;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(sigSourceImg, 0, 0);
+
+            const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const d = imgData.data;
+
+            for (let i = 0; i < d.length; i += 4) {
+                const r = d[i], g = d[i + 1], b = d[i + 2];
+                const lum = 0.299 * r + 0.587 * g + 0.114 * b;
+
+                if (lum > thresh) {
+                    // Paper background
+                    if (transparent) {
+                        d[i + 3] = 0;
+                    } else {
+                        d[i] = 255; d[i + 1] = 255; d[i + 2] = 255; d[i + 3] = 255;
+                    }
+                } else {
+                    // Ink stroke
+                    if (sigInkMode === 'black') {
+                        d[i] = 15; d[i + 1] = 23; d[i + 2] = 42; d[i + 3] = 255;
+                    } else if (sigInkMode === 'blue') {
+                        d[i] = 29; d[i + 1] = 78; d[i + 2] = 216; d[i + 3] = 255;
+                    }
+                }
+            }
+            ctx.putImageData(imgData, 0, 0);
+        }
+
+        function generateSampleSignature() {
+            const c = document.createElement('canvas');
+            c.width = 700;
+            c.height = 260;
+            const ctx = c.getContext('2d');
+
+            // Simulate dark gray/shadowy mobile camera paper
+            const g = ctx.createLinearGradient(0, 0, 700, 260);
+            g.addColorStop(0, '#cbd5e1');
+            g.addColorStop(1, '#94a3b8');
+            ctx.fillStyle = g;
+            ctx.fillRect(0, 0, 700, 260);
+
+            // Draw simulated handwritten signature
+            ctx.strokeStyle = '#1e293b';
+            ctx.lineWidth = 6;
+            ctx.lineCap = 'round';
+            ctx.font = 'italic bold 64px Georgia, serif';
+            ctx.fillStyle = '#1e293b';
+            ctx.fillText('Shubham Kumar', 110, 145);
+
+            // Underline flourish
+            ctx.beginPath();
+            ctx.moveTo(95, 175);
+            ctx.quadraticCurveTo(350, 135, 590, 180);
+            ctx.stroke();
+
+            const img = new Image();
+            img.onload = () => {
+                sigSourceImg = img;
+                processSignatureClean();
+            };
+            img.src = c.toDataURL('image/jpeg', 0.9);
+        }
+
+        function downloadCleanedSignature() {
+            const canvas = document.getElementById('sig-clean-canvas');
+            const transparent = document.getElementById('sig-transparent').checked;
+            const ext = transparent ? 'png' : 'jpg';
+            const mime = transparent ? 'image/png' : 'image/jpeg';
+            const a = document.createElement('a');
+            a.href = canvas.toDataURL(mime, 0.95);
+            a.download = `shubham-cleaned-signature.${ext}`;
+            a.click();
+            showToast(`Downloaded crisp signature (${ext.toUpperCase()})!`);
+        }
+
+        /* ==================== NEW TOOL D: ID CARD FRONT + BACK COMBINER ==================== */
+        function handleIdCardSide(side, file) {
+            if (!file || !file.type.startsWith('image/')) return;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const img = new Image();
+                img.onload = () => {
+                    if (side === 'front') {
+                        idCardState.frontImg = img;
+                        document.getElementById('id-front-status').textContent = file.name;
+                    } else {
+                        idCardState.backImg = img;
+                        document.getElementById('id-back-status').textContent = file.name;
+                    }
+                    renderIdCardSheet();
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function renderIdCardSheet() {
+            if (!idCardState.frontImg && !idCardState.backImg) {
+                generateSampleIdCards();
+                return;
+            }
+            const mode = document.getElementById('id-layout-mode').value;
+            const canvas = document.getElementById('id-card-canvas');
+            const ctx = canvas.getContext('2d');
+
+            // Standard CR80 ID card aspect ratio ~ 85.6mm x 54mm (1.585)
+            const cardW = 680, cardH = 430;
+
+            if (mode === 'sbs') {
+                canvas.width = 1600;
+                canvas.height = 2260; // A4 proportion
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                if (idCardState.frontImg) {
+                    ctx.drawImage(idCardState.frontImg, 80, 120, cardW, cardH);
+                    ctx.strokeStyle = '#94a3b8';
+                    ctx.strokeRect(80, 120, cardW, cardH);
+                }
+                if (idCardState.backImg) {
+                    ctx.drawImage(idCardState.backImg, 840, 120, cardW, cardH);
+                    ctx.strokeStyle = '#94a3b8';
+                    ctx.strokeRect(840, 120, cardW, cardH);
+                }
+            } else if (mode === 'vertical') {
+                canvas.width = 1600;
+                canvas.height = 2260;
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+                if (idCardState.frontImg) {
+                    ctx.drawImage(idCardState.frontImg, 460, 140, cardW, cardH);
+                    ctx.strokeRect(460, 140, cardW, cardH);
+                }
+                if (idCardState.backImg) {
+                    ctx.drawImage(idCardState.backImg, 460, 640, cardW, cardH);
+                    ctx.strokeRect(460, 640, cardW, cardH);
+                }
+            } else {
+                canvas.width = cardW * 2 + 60;
+                canvas.height = cardH + 40;
+                ctx.fillStyle = '#FFFFFF';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+                if (idCardState.frontImg) ctx.drawImage(idCardState.frontImg, 20, 20, cardW, cardH);
+                if (idCardState.backImg) ctx.drawImage(idCardState.backImg, cardW + 40, 20, cardW, cardH);
+            }
+        }
+
+        function generateSampleIdCards() {
+            function makeCard(title, sub, accent) {
+                const c = document.createElement('canvas');
+                c.width = 680; c.height = 430;
+                const ctx = c.getContext('2d');
+                ctx.fillStyle = '#f8fafc';
+                ctx.fillRect(0, 0, 680, 430);
+                ctx.fillStyle = accent;
+                ctx.fillRect(0, 0, 680, 75);
+                ctx.fillStyle = '#ffffff';
+                ctx.font = 'bold 28px Inter, sans-serif';
+                ctx.fillText(title, 30, 48);
+                ctx.fillStyle = '#1e293b';
+                ctx.font = 'bold 24px Inter, sans-serif';
+                ctx.fillText(sub, 30, 150);
+                ctx.font = '20px monospace';
+                ctx.fillText('ID NO: 0000 1111 2222', 30, 220);
+                ctx.fillText('ISSUED BY: SHUBHAM COMPUTER TOOLS', 30, 360);
+                return c.toDataURL('image/jpeg', 0.92);
+            }
+
+            const fImg = new Image();
+            const bImg = new Image();
+            fImg.onload = () => {
+                idCardState.frontImg = fImg;
+                bImg.onload = () => {
+                    idCardState.backImg = bImg;
+                    document.getElementById('id-front-status').textContent = 'Demo Front Loaded';
+                    document.getElementById('id-back-status').textContent = 'Demo Back Loaded';
+                    renderIdCardSheet();
+                };
+                bImg.src = makeCard('CITIZEN ID CARD — BACK SIDE', 'Address: Jan Seva Kendra, Main Road', '#15803d');
+            };
+            fImg.src = makeCard('CITIZEN ID CARD — FRONT SIDE', 'Name: SHUBHAM KUMAR', '#ea580c');
+        }
+
+        async function downloadIdCardOutput(type) {
+            const canvas = document.getElementById('id-card-canvas');
+            const dataUrl = canvas.toDataURL('image/jpeg', 0.94);
+            if (type === 'jpg') {
+                const a = document.createElement('a');
+                a.href = dataUrl;
+                a.download = 'shubham-id-card-print.jpg';
+                a.click();
+                showToast('Downloaded Combined ID Card JPG!');
+            } else {
+                const jpgBytes = await imageDataUrlToJpegBytes(dataUrl);
+                const { PDFDocument } = PDFLib;
+                const pdfDoc = await PDFDocument.create();
+                const emb = await pdfDoc.embedJpg(jpgBytes);
+                const page = pdfDoc.addPage([595.28, 841.89]); // A4
+                const scale = Math.min(595.28 / emb.width, 841.89 / emb.height);
+                page.drawImage(emb, {
+                    x: (595.28 - emb.width * scale) / 2,
+                    y: 841.89 - emb.height * scale,
+                    width: emb.width * scale,
+                    height: emb.height * scale
+                });
+                const bytes = await pdfDoc.save();
+                downloadPdfBytes(bytes, 'shubham-id-card-a4.pdf');
+                showToast('Downloaded A4 ID Card Print PDF!');
+            }
         }
 
         /* ==================== TOOL 1: PHOTO RESIZER LOGIC ==================== */
@@ -1057,7 +2192,6 @@
             if (active) {
                 active.className = 'fmt-btn py-2 rounded-xl text-xs font-semibold border border-pink-500 bg-pink-500/10 text-pink-500';
             }
-            // PNG is lossless in canvas.toBlob, toggle quality visibility
             document.getElementById('resizer-quality-wrap').style.opacity = mime === 'image/png' ? '0.45' : '1';
             updateResizerPreview();
         }
@@ -1076,7 +2210,6 @@
             canvas.height = h;
             const ctx = canvas.getContext('2d');
 
-            // Fill white background for JPEG so transparent PNGs don't turn black
             if (resizerState.format === 'image/jpeg') {
                 ctx.fillStyle = '#FFFFFF';
                 ctx.fillRect(0, 0, w, h);
@@ -1123,7 +2256,6 @@
             showToast(`Downloaded resized-${w}x${h}.${ext}!`);
         }
 
-        // Generate synthetic sample photo on canvas so user can test immediately
         function generateSamplePhoto() {
             const c = document.createElement('canvas');
             c.width = 1600;
@@ -1137,7 +2269,6 @@
             ctx.fillStyle = grad;
             ctx.fillRect(0, 0, 1600, 1000);
 
-            // Decorative circles
             ctx.fillStyle = 'rgba(255,255,255,0.14)';
             ctx.beginPath(); ctx.arc(1300, 250, 260, 0, Math.PI * 2); ctx.fill();
             ctx.beginPath(); ctx.arc(300, 800, 320, 0, Math.PI * 2); ctx.fill();
@@ -1256,7 +2387,6 @@
             document.getElementById(`margin-${marginPts}`).className = 'margin-btn py-2 rounded-xl text-xs font-semibold border border-amber-500 bg-amber-500/10 text-amber-500';
         }
 
-        // Convert any image DataURL to clean JPEG Uint8Array via canvas so WEBP/PNG/JPG all embed cleanly in pdf-lib
         async function imageDataUrlToJpegBytes(dataUrl) {
             return new Promise((resolve) => {
                 const img = new Image();
@@ -1297,7 +2427,6 @@
                         pageW = embeddedImg.width + margin * 2;
                         pageH = embeddedImg.height + margin * 2;
                     } else {
-                        // A4 = 595.28 x 841.89, LETTER = 612 x 792
                         let baseW = pageSizeMode === 'A4' ? 595.28 : 612;
                         let baseH = pageSizeMode === 'A4' ? 841.89 : 792;
                         const isLandscape = img2PdfState.orientation === 'landscape' ||
@@ -1375,7 +2504,6 @@
             setTimeout(() => URL.revokeObjectURL(url), 5000);
         }
 
-        // Generate a multi-page sample PDF on the fly using pdf-lib for instant testing
         async function createSamplePdfBytes(titlePrefix = 'Sample Document', numPages = 5) {
             const { PDFDocument, StandardFonts, rgb } = PDFLib;
             const doc = await PDFDocument.create();
@@ -1384,7 +2512,6 @@
 
             for (let i = 1; i <= numPages; i++) {
                 const page = doc.addPage([600, 800]);
-                // Header bar
                 page.drawRectangle({ x: 40, y: 690, width: 520, height: 70, color: rgb(0.31, 0.27, 0.9) });
                 page.drawText(`${titlePrefix} — Page ${i} of ${numPages}`, {
                     x: 65, y: 718, size: 22, font: fontBold, color: rgb(1, 1, 1)
@@ -1392,7 +2519,6 @@
                 page.drawText(`Generated locally by Shubham Computer Tools for live PDF testing.`, {
                     x: 60, y: 630, size: 14, font: fontReg, color: rgb(0.2, 0.2, 0.25)
                 });
-                // Giant page indicator box in center so rotation/splitting is super obvious visually
                 page.drawRectangle({ x: 180, y: 300, width: 240, height: 240, color: rgb(0.94, 0.95, 0.98) });
                 page.drawText(`P${i}`, {
                     x: 245, y: 390, size: 86, font: fontBold, color: rgb(0.31, 0.27, 0.9)
@@ -1401,7 +2527,6 @@
             return await doc.save();
         }
 
-        // Render PDF pages onto canvases using PDF.js
         async function renderPdfThumbnails(arrayBuffer, scale = 0.4) {
             const copyBuffer = arrayBuffer.slice(0);
             const loadingTask = pdfjsLib.getDocument({ data: copyBuffer });
@@ -1938,8 +3063,16 @@
 
         async function generateSampleAssets() {
             if (currentTool === 'dashboard') {
-                switchTool('resizer');
-                generateSamplePhoto();
+                switchTool('cropper');
+                generateSampleCropPhoto();
+            } else if (currentTool === 'cropper') {
+                generateSampleCropPhoto();
+            } else if (currentTool === 'passport') {
+                generateSamplePassportPhoto();
+            } else if (currentTool === 'sigclean') {
+                generateSampleSignature();
+            } else if (currentTool === 'idcard') {
+                generateSampleIdCards();
             } else if (currentTool === 'resizer') {
                 generateSamplePhoto();
             } else if (currentTool === 'img2pdf') {
@@ -1954,6 +3087,7 @@
         // Setup Drag & Drop Listeners on all Dropzones
         function initDragAndDropZones() {
             const zones = [
+                { id: 'cropper-dropzone', handler: (files) => handleCropperFile(files[0]) },
                 { id: 'resizer-dropzone', handler: (files) => handleResizerFile(files[0]) },
                 { id: 'img2pdf-dropzone', handler: (files) => handleImg2PdfFiles(files) },
                 { id: 'merge-dropzone', handler: (files) => handleMergeFiles(files) },
